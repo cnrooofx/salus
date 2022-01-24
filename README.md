@@ -1,0 +1,2 @@
+# salus
+Password Manager
