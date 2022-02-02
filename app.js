@@ -1,23 +1,25 @@
 //const mongoose = require('mongoose');
 var crypto = require('crypto');
-const { application } = require('express');
+//const { application } = require('express');
 const https = require('https')
 
 function set_password(password){
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password,this.salt,1000,64,`sha512`).toString(`hex`);
-    post_to_server(this.hash,this.salt)
+    const data = JSON.stringify({
+        "name":salt,
+        "password":hash
+    })
+    post_to_server(data)
 }
 
-function post_to_server(hash,salt){
-    const data = JSON.stringify({
-        "hash":hash,
-        "salt":salt
-    })
+
+function post_to_server(info){
+    const data = info
     const options = {
-        hostname: '',
-        port: 0000,
-        path: '',
+        hostname: 'www.salussecurity.live',
+        port: 5000,
+        path: '/users',
         method: 'POST',
         headers: {
             'Content-Type': 'application/JSON',
@@ -41,4 +43,4 @@ function post_to_server(hash,salt){
     req.end()
 }
 
-console.log(set_password('12345'))
+set_password('12345')
