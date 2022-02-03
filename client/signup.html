@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en-ie">
+
+<head>
+    <title>Sign Up &vert; Salus</title>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Salus Password Manager</h1>
+        <img src="logo.png" alt="The Salus Logo, an icon of a lock" />
+    </header>
+    <main>
+        <h1>Sign Up</h1>
+        <form id="login-form">
+            <label for="email">Email: </label>
+            <input type="email" name="email" id="email" />
+            <label for="password">Password: </label>
+            <input type="password" name="password" />
+            <input type="submit" id="login-button" />
+        </form>
+        <p>Already have an account? <a href="index.html">Click Here</a> to log in.</p>
+    </main>
+</body>
+
+</html>
