@@ -1,0 +1,14 @@
+{
+  "name": "salus",
+  "version": "1.0.0",
+  "description": "Salus Password Manager",
+  "main": "app.js",
+  "author": "Salus",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^16.0.7"
+  },
+  "scripts": {
+    "start": "electron ."
+  }
+}
