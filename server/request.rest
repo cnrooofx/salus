@@ -11,3 +11,14 @@ Content-Type: application/json
     "name":"Orlaith",
     "password": "yess"
 }
+
+####
+POST http://localhost:5000/signup
+Content-Type: application/json
+
+{
+    "uname":"aidan1",
+    "pass": "fuwbfuwbfuwb"
+}
+
+
