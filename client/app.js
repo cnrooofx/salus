@@ -2,19 +2,19 @@ const path = require('path')
 const { app, BrowserWindow, ipcMain } = require('electron')
 const Store = require('electron-store')
 const storage = new Store()
-// storage.set('logged-in', false)
+storage.set('logged-in', false)
 
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
   })
   win.webContents.openDevTools()
   win.loadFile('login.html')
+  // storage.get('logged-in') ? win.loadFile('unlock.html') : win.loadFile('login.html')
 }
 
 app.whenReady().then(() => {
