@@ -17,8 +17,24 @@ POST http://localhost:5000/signup
 Content-Type: application/json
 
 {
-    "uname":"aidan1",
-    "pass": "fuwbfuwbfuwb"
+    "email":"aidan@ucc.ie",
+    "pass": "fuwbfuwbfuwb",
+    "salt":"73456566565656"
 }
 
+###
+GET http://localhost:5000/salt
+Content-Type: application/json
 
+{
+    "email":"aidan@ucc.ie"
+}
+
+###
+GET http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "email":"aidan@ucc.ie",
+    "pass":"fuwbfuwbfuwb"
+}

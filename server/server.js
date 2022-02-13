@@ -30,11 +30,9 @@ app.post('/signup',(req,res) => {
               console.log("1 document updated");
     
 
-          const data = { _id: result.seq, uname : req.body.uname, password: req.body.pass}
+          const data = { _id : result.seq, email : req.body.email, password : req.body.pass, salt : req.body.salt}
           dbo.collection("users").insertOne(data, function(err, res) {
             if (err) throw err;
-  
-
             console.log("User created");
             db.close();
           });
@@ -44,20 +42,40 @@ app.post('/signup',(req,res) => {
 })
 })
 
-
-app.post('/users',(req,res) => {
-  const uname = { name : req.body.name, password: req.body.password}
-  MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
-      var dbo = db.db("pwds");
-      dbo.collection("userp").insertOne(uname, function(err, res) {
-        if (err) throw err;
-        console.log("User created");
-        db.close();
-      });
-    });
-  res.status(201).send()
+app.get('/salt', (req, res) => {
+   MongoClient.connect(url, function(err,db) {
+     if (err) throw err;
+      var dbo = db.db("users");
+      dbo.collection("users").findOne({email:req.body.email}, function(err,result){
+        if (result == null){
+          res.send('false')
+      }
+      else{
+        res.send(result.salt);
+      }
+      }
+      )
+   })
 })
+
+
+app.get('/login', (req, res) => {
+  MongoClient.connect(url, function(err,db) {
+    if (err) throw err;
+     var dbo = db.db("users");
+     dbo.collection("users").findOne({email:req.body.email}, function(err,result){
+       console.log(result)
+       if (req.body.pass == result.password){
+         res.send('true')
+     }
+     else{
+       res.send(false);
+     }
+     }
+     )
+  })
+})
+
 app.listen(port, hostname, () => {
       console.log(`Server running at http://${hostname}:${port}/`);
 });
