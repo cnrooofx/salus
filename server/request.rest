@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/salt
+POST http://salussecurity.live:5000/salt
 Content-Type: application/json
 
 {

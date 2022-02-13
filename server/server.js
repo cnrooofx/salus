@@ -1,13 +1,24 @@
 const express = require('express')
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var privateKey= fs.readFileSync('privkey.pem');
+var certificate = fs.readFileSync('fullchain.pem');
+
+var credentials = {key: privateKey, cert: certificate};
+
 const { MongoClient, ServerApiVersion } = require("mongodb");
 var url = `mongodb+srv://test:7hH398r5cFQD46j0@solus-db-3a415e48.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=solus-db&tls=true&tlsCAFile=ca-certificate.crt`
 const client = new MongoClient(url, { serverApi: ServerApiVersion.v1 });
 const app = express()
 
+
+
 app.use(express.json())
 
 const hostname = '0.0.0.0';
 const port = 5000;
+const hport= 5443;
 const users = [{ name: 'Aidan'}]
 
 
@@ -37,15 +48,16 @@ app.post('/signup',(req,res) => {
             db.close();
           });
     });
-    res.status(201).send();
+    res.status(201).send("true");
   });
 })
 })
 
-app.get('/salt', (req, res) => {
+app.post('/salt', (req, res) => {
    MongoClient.connect(url, function(err,db) {
      if (err) throw err;
       var dbo = db.db("users");
+	  console.log()
       dbo.collection("users").findOne({email:req.body.email}, function(err,result){
         if (result == null){
           res.send('false')
@@ -59,7 +71,7 @@ app.get('/salt', (req, res) => {
 })
 
 
-app.get('/login', (req, res) => {
+app.post('/login', (req, res) => {
   MongoClient.connect(url, function(err,db) {
     if (err) throw err;
      var dbo = db.db("users");
@@ -76,6 +88,13 @@ app.get('/login', (req, res) => {
   })
 })
 
-app.listen(port, hostname, () => {
-      console.log(`Server running at http://${hostname}:${port}/`);
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(port, hostname, () => {
+      console.log(`HTTP Server running at http://${hostname}:${port}/`);
+});
+
+httpsServer.listen(hport, hostname, () => {
+	console.log(`HTTP Server running at http://${hostname}:${port}/`);
 });
