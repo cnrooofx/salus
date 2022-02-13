@@ -10,5 +10,8 @@
   },
   "scripts": {
     "start": "electron ."
+  },
+  "dependencies": {
+    "electron-store": "^8.0.1"
   }
 }
