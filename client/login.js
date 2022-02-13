@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-const http = require('http')
+const https = require('https')
 //=====================================================================
    /*
     Method takes in user email and password.
@@ -15,7 +15,7 @@ function getSalt(email,password){
 
     var options = {
         host: 'www.salussecurity.live',
-        port: 5000,
+        port: 5443,
         path: '/salt',
         method: 'POST',
         headers: {
@@ -40,7 +40,7 @@ function getSalt(email,password){
             }
         })
     }
-    var req = http.request(options,callback);
+    var req = https.request(options,callback);
     req.write(toSend);
     req.end();
 }
@@ -60,7 +60,7 @@ function checkCredentials(salt,email,password){
     })
     var options = {
         host: 'www.salussecurity.live',
-        port: 5000,
+        port: 5443,
         path: '/login',
         method: 'POST',
         headers: {
@@ -85,9 +85,9 @@ function checkCredentials(salt,email,password){
             }
         })
     }
-    var req = http.request(options,callback);
+    var req = https.request(options,callback);
     req.write(toSend);
     req.end();
 }
 
-getSalt("aidan@ucc.ie","fuwbfupwbfuwb")
+getSalt("aidan@ucc.ie","fuwbfuwbfuwb")
