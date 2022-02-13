@@ -56,7 +56,7 @@ function checkCredentials(salt,email,password){
     console.log("Hashed Password: "+hash);
     const toSend = JSON.stringify({
         "email":email,
-        "pass":password 
+        "pass":hash 
     })
     var options = {
         host: 'www.salussecurity.live',
