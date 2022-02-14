@@ -1,2 +1,0 @@
-main password -> salt+hashed -> save salt with user + pass + salt saved in db ->
-key generated from hashed password, stored on computer, scrypt on new passwords 
