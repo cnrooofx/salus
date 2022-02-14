@@ -1,6 +1,7 @@
 const path = require('path')
 const { app, BrowserWindow, ipcMain } = require('electron')
 const Store = require('electron-store')
+
 const storage = new Store()
 storage.set('logged-in', false)
 
