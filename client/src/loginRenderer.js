@@ -1,5 +1,5 @@
-var crypto = require('crypto');
-const https = require('https')
+// const https = require('https')
+// const crypto = require('crypto')
 //=====================================================================
 /*
  Method takes in user email and password.
@@ -8,94 +8,107 @@ const https = require('https')
  Salt, email and password passed onto checkCredentials() to authenticate password.
  If email not in database, returns false.
  */
-function getSalt(email, password) {
-    const toSend = JSON.stringify({
-        "email": email,
-    })
+// function getSalt(email, password) {
+//     const toSend = JSON.stringify({
+//         "email": email,
+//     })
 
-    var options = {
-        host: 'www.salussecurity.live',
-        port: 5443,
-        path: '/salt',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/JSON',
-            'Content-Length': toSend.length
-        }
-    };
+//     var options = {
+//         host: 'www.salussecurity.live',
+//         port: 5443,
+//         path: '/salt',
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/JSON',
+//             'Content-Length': toSend.length
+//         }
+//     };
 
-    callback = function (response) {
-        var str = "";
-        response.on('data', function (chunk) {
-            str += chunk;
-        });
-        response.on('end', function () {
-            if (str != "false") {
-                console.log('Salt Obtained: ' + str)
-                checkCredentials(str, email, password);
-            }
-            else {
-                console.log(str + '\nSalt not Obtained')
-                return false;
-            }
-        })
+//     callback = function (response) {
+//         var str = "";
+//         response.on('data', function (chunk) {
+//             str += chunk;
+//         });
+//         response.on('end', function () {
+//             if (str != "false") {
+//                 console.log('Salt Obtained: ' + str)
+//                 checkCredentials(str, email, password);
+//             }
+//             else {
+//                 console.log(str + '\nSalt not Obtained')
+//                 return false;
+//             }
+//         })
+//     }
+//     var req = https.request(options, callback);
+//     req.write(toSend);
+//     req.end();
+// }
+// //=====================================================================
+// function checkCredentials(salt, email, password) {
+//     /*
+//     Method takes in user salt, email and password.
+//     Generates hashed password and sends off to server along with email.
+//     If match what's in database, returns true
+//     else returns false.
+//     */
+//     hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+//     console.log("Hashed Password: " + hash);
+//     const toSend = JSON.stringify({
+//         "email": email,
+//         "pass": hash
+//     })
+//     var options = {
+//         host: 'www.salussecurity.live',
+//         port: 5443,
+//         path: '/login',
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/JSON',
+//             'Content-Length': toSend.length
+//         }
+//     };
+
+//     callback = function (response) {
+//         var str = "";
+//         response.on('data', function (chunk) {
+//             str += chunk;
+//         });
+//         response.on('end', function () {
+//             if (str == "true") {
+//                 console.log(str + '\nUser Verified')
+//                 return true;
+//             }
+//             else {
+//                 console.log(str + '\nUser Rejected')
+//                 return false;
+//             }
+//         })
+//     }
+//     var req = https.request(options, callback);
+//     req.write(toSend);
+//     req.end();
+// }
+
+// getSalt("aidan@ucc.ie", "fuwbfuwbfuwb")
+
+
+const button = document.getElementById('btn1')
+
+button.addEventListener('click', async () => {
+    var details = {
+        email: 'aidan@ucc.ie',
+        password: 'fuwbfuwbfuwb'
     }
-    var req = https.request(options, callback);
-    req.write(toSend);
-    req.end();
-}
-//=====================================================================
-function checkCredentials(salt, email, password) {
-    /*
-    Method takes in user salt, email and password.
-    Generates hashed password and sends off to server along with email.
-    If match what's in database, returns true
-    else returns false.
-    */
-    hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
-    console.log("Hashed Password: " + hash);
-    const toSend = JSON.stringify({
-        "email": email,
-        "pass": hash
-    })
-    var options = {
-        host: 'www.salussecurity.live',
-        port: 5443,
-        path: '/login',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/JSON',
-            'Content-Length': toSend.length
-        }
-    };
+    console.log(details)
+    const isAuth = await window.electronAPI.authenticateUser(details)
+    console.log(isAuth)
+})
 
-    callback = function (response) {
-        var str = "";
-        response.on('data', function (chunk) {
-            str += chunk;
-        });
-        response.on('end', function () {
-            if (str == "true") {
-                console.log(str + '\nUser Verified')
-                return true;
-            }
-            else {
-                console.log(str + '\nUser Rejected')
-                return false;
-            }
-        })
-    }
-    var req = https.request(options, callback);
-    req.write(toSend);
-    req.end();
-}
+const btn = document.getElementById('btn')
+const filePathElement = document.getElementById('filePath')
 
-getSalt("aidan@ucc.ie", "fuwbfuwbfuwb")
-
-
-const button = document.getElementById('btn')
-
-button.addEventListener('click', () => {
-    const title = 'this is the new title'
-    window.electronAPI.setTitle(title)
+btn.addEventListener('click', async () => {
+    const filePath = await window.electronAPI.openFile()
+    filePathElement.innerText = filePath
 })
