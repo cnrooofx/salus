@@ -1,5 +1,14 @@
+html {
+    --light-background: #D1D6DC;
+    --light-foreground: #EEF0F2;
+    --light-accent: #317BB3;
+    --dark-background: #1F1F1F;
+    --dark-foreground: #333;
+    --dark-accent: #7BAFD1;
+}
+
 body {
-    background-color: #eef0f2;
+    background-color: var(--light-background);
     font-family: sans-serif;
 }
 
@@ -25,7 +34,7 @@ header img {
 }
 
 main {
-    background-color: #fff;
+    background-color: var(--light-foreground);
     width: 90%;
     height: 90%;
     margin: auto;
@@ -38,13 +47,13 @@ main {
 }
 
 a {
-    color: #465F72;
+    color: var(--light-accent);
 }
 
 input {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
     padding: 0.3em;
-    border: 0.1em solid #1F1F1F;
-    border-radius: 0.5em;
 }
 
 input, label {
@@ -58,17 +67,20 @@ input[type="submit"] {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: #1F1F1F;
-        color: white;
+        background-color: var(--dark-background);
+        color: #fff;
     }
     header img {
         filter: invert();
     }
     main {
-        background-color: #333;
+        background-color: var(--dark-foreground);
         box-shadow: none;
     }
+    input {
+        border-color: var(--dark-background);
+    }
     a {
-        color: #6689A1;
+        color: var(--dark-accent);
     }
 }

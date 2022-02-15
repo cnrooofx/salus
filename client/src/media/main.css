@@ -4,8 +4,10 @@ html {
 
     --light-background: #D1D6DC;
     --light-foreground: #EEF0F2;
+    --light-accent: #317BB3;
     --dark-background: #1F1F1F;
     --dark-foreground: #333;
+    --dark-accent: #7BAFD1;
 }
 
 body {
