@@ -1,10 +1,15 @@
 html {
     height: 100vh;
     font-family: sans-serif;
+
+    --light-background: #D1D6DC;
+    --light-foreground: #EEF0F2;
+    --dark-background: #1F1F1F;
+    --dark-foreground: #333;
 }
 
 body {
-    background-color: #D1D6DC;
+    background-color: var(--light-background);
     font-family: sans-serif;
     display: flex;
     flex-direction: row-reverse;
@@ -16,12 +21,11 @@ body {
 main, aside {
     height: 90%;
     padding: 1em;
-    /* box-shadow: 0.2em 0.2em 1em #999; */
 }
 
 main {
     width: 75%;
-    background-color: #EEF0F2;
+    background-color: var(--light-foreground);
 }
 
 aside {
@@ -40,20 +44,20 @@ li {
 }
 
 li:hover {
-    background-color: #EEF0F2;
-    color: #000;
+    background-color: var(--light-foreground);
+    transition: background-color ease-in-out 0.3s;
 }
 
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: #1F1F1F;
+        background-color: var(--dark-background);
         color: white;
     }
     main {
-        background-color: #333;
+        background-color: var(--dark-foreground);
         box-shadow: none;
     }
-    a {
-        color: #6689A1;
+    li:hover {
+        background-color: var(--dark-foreground);
     }
 }
