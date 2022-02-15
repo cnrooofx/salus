@@ -25,10 +25,10 @@ const createWindow = () => {
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
     createWindow()
-    
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
+})
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
 app.on('window-all-closed', () => {
