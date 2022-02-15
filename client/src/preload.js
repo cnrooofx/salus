@@ -2,8 +2,7 @@ const {contextBridge, ipcRenderer} = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
     // setTitle: (title) => ipcRenderer.send('set-title', title)
-    openFile: () => ipcRenderer.invoke('openFile'),
-    authenticateUser: () => ipcRenderer.invoke('authenticate', details)
+    authenticateUser: (email, password) => ipcRenderer.invoke('authenticate', email, password)
 })
 
 // window.addEventListener('DOMContentLoaded', () => {

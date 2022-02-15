@@ -1,6 +1,8 @@
 const path = require('path')
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const Store = require('electron-store')
+const https = require('https')
+const crypto = require('crypto')
 
 const storage = new Store()
 storage.set('logged-in', false)
@@ -21,9 +23,7 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
-    // ipcMain.on('set-title', handleSetTitle)
-    // ipcMain.handle('openFile', handleFileOpen)
-    ipcMain.handle('authenticate', getSalt)
+    ipcMain.handle('authenticate', authenticateUser)
     createWindow()
     
     app.on('activate', () => {
@@ -35,28 +35,12 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-async function handleFileOpen() {
-    const { canceled, filePaths } = await dialog.showOpenDialog()
-    if (canceled) {
-        return
-    } else {
-        return filePaths[0]
-    }
+async function authenticateUser(event, email, password) {
+    const result = getSalt(email, password)
+    return result
 }
 
-// function handleSetTitle(event, title) {
-//     const webContents = event.sender
-//     const win = BrowserWindow.fromWebContents(webContents)
-//     if (storage.get('logged-in')) {
-//         title = 'already logged in' 
-//     } else {
-//         storage.set('logged-in', true)
-//     }
-//     win.setTitle(title)
-// }
-
-async function getSalt(event, details) {
-    console.log('hello');
+function getSalt(email, password) {
     const toSend = JSON.stringify({
         "email": email,
     })
@@ -80,7 +64,9 @@ async function getSalt(event, details) {
         response.on('end', function () {
             if (str != "false") {
                 console.log('Salt Obtained: ' + str)
-                return checkCredentials(str, email, password);
+                const output = checkCredentials(str, email, password)
+                return output
+               
             }
             else {
                 console.log(str + '\nSalt not Obtained')
