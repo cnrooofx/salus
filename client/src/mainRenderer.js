@@ -14,30 +14,31 @@ const accountData = {
 }
 
 const sidebar = document.getElementById('sidebar')
+var sidebarSelection = null
+
 
 if (Object.keys(accountData) == 0) {
-    console.log("empty")
-    const listElement = createListElement("empty", "No Accounts Yet")
-    sidebar.appendChild(listElement)
+    createListElement('empty', 'No Accounts Yet')
 } else {
     var idCounter = 0
-
     for (var account in accountData) {
-        const listElement = createListElement("account" + idCounter, account)
-        sidebar.appendChild(listElement)
-        listElement.onclick = sidebarClickHandler(event)
+        const listElement = createListElement('account' + idCounter, account)
+        listElement.addEventListener(onclick, event => {
+            console.log(event)
+        })
+        if (sidebarSelection == null) {
+            listElement.setAttribute('class', 'active')
+            sidebarSelection = listElement
+        }
+        idCounter++
     }
 }
 
 function createListElement(id, text) {
     const listItem = document.createElement('li')
     const listText = document.createTextNode(text)
-    listItem.setAttribute("id", id)
+    listItem.setAttribute('id', id)
     listItem.appendChild(listText)
-
+    sidebar.appendChild(listItem)
     return listItem
-}
-
-function sidebarClickHandler(event) {
-    console.log(event)
 }

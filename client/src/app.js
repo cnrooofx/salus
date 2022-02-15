@@ -25,10 +25,10 @@ app.whenReady().then(() => {
     // ipcMain.handle('openFile', handleFileOpen)
     ipcMain.handle('authenticate', getSalt)
     createWindow()
-    
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
-    })
+})
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
 app.on('window-all-closed', () => {

@@ -1,55 +1,86 @@
+/* General */
 html {
     height: 100vh;
     font-family: sans-serif;
 
     --light-background: #D1D6DC;
     --light-foreground: #EEF0F2;
-    --light-accent: #317BB3;
     --dark-background: #1F1F1F;
     --dark-foreground: #333;
+    --accent: #317BB3;
     --dark-accent: #7BAFD1;
 }
-
 body {
     background-color: var(--light-background);
     font-family: sans-serif;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     height: 100vh;
     margin: 0;
     padding: 0;
 }
-
-main, aside {
-    height: 90%;
+nav, main {
+    height: auto;
     padding: 1em;
 }
-
+nav {
+    width: 25%;
+}
 main {
     width: 75%;
     background-color: var(--light-foreground);
 }
 
-aside {
-    width: 25%;
-}
-
+/* Account List */
 ul { 
     list-style: none;
     padding: 0;
 }
-
 li {
     border-radius: 0.3em;
     margin: 0 0.5em;
     padding: 0.5em;
 }
-
+.active, li:hover[class="active"] {
+    background-color: var(--accent);
+    color: #fff;
+}
 li:hover {
     background-color: var(--light-foreground);
     transition: background-color ease-in-out 0.3s;
 }
 
+/* Search Bar */
+nav input {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    margin: 0.5em auto;
+    padding: 0.5em;
+    width: 90%;
+}
+input, label {
+    display: block;
+    margin: 0.5em;
+}
+
+/* Main View */
+button {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    padding: 0.5em 0.75em;
+}
+header button {
+    background-color: var(--accent);
+    color: #fff;
+    float: right;
+    margin: 0.5em auto;
+}
+section button {
+    margin: auto 0 0 auto;
+}
+
+
+/* Dark Mode Colour Scheme */
 @media (prefers-color-scheme: dark) {
     body {
         background-color: var(--dark-background);
@@ -58,6 +89,9 @@ li:hover {
     main {
         background-color: var(--dark-foreground);
         box-shadow: none;
+    }
+    li:hover[class="active"], .active {
+        background-color: var(--accent);
     }
     li:hover {
         background-color: var(--dark-foreground);
