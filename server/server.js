@@ -42,10 +42,15 @@ app.post('/signup',(req,res) => {
     
 
           const data = { _id : result.seq, email : req.body.email, password : req.body.pass, salt : req.body.salt}
+          const pdata = {_id: result.seq, pass:{}}
           dbo.collection("users").insertOne(data, function(err, res) {
             if (err) throw err;
-            console.log("User created");
-            db.close();
+            console.log("Made it through users");
+            dbo.collection("passwords").insertOne(pdata, function(err, res) {
+              if (err) throw err;
+              console.log("User created");
+              db.close();
+            });
           });
     });
     res.status(201).send("true");
@@ -70,6 +75,23 @@ app.post('/salt', (req, res) => {
    })
 })
 
+app.post('/password', (req, res) => {
+  MongoClient.connect(url, function(err,db) {
+    if (err) throw err;
+     var dbo = db.db("users");
+     dbo.collection("passwords").findOne({_id:req.body.id}, function(err,result){
+      if (err) throw err;
+       result.pass = req.body.data;
+       console.log[result];
+       var myq = { _id:req.body.id};
+      var newvalues = {result};
+       dbo.collection("passwords").replaceOne(myq, newvalues, function(err, res) {
+        if (err) throw err;
+        console.log("1 document updated");
+    })
+  })
+})
+})
 
 app.post('/login', (req, res) => {
   MongoClient.connect(url, function(err,db) {
@@ -83,8 +105,7 @@ app.post('/login', (req, res) => {
      else{
        res.send(false);
      }
-     }
-     )
+    })
   })
 })
 

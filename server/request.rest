@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ####
-POST http://localhost:5000/signup
+POST http://salussecurity.live:5000/signup
 Content-Type: application/json
 
 {
@@ -37,4 +37,13 @@ Content-Type: application/json
 {
     "email":"aidan@ucc.ie",
     "pass":"fuwbfuwbfuwb"
+}
+####
+POST http://salussecurity.live:5000/password
+Content-Type: application/json
+
+{
+    "id":15,
+    "data": {"place":"con1or","pass":"efwfwefwfwe","url":"fefwfwef"}
+
 }
