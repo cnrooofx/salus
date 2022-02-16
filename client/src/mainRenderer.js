@@ -14,8 +14,109 @@ const accountData = {
     "Salus": {
         "user": "admin@salussecurity.live",
         "pass": "123456789"
+    },
+    "Google": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "Facebook": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "Instagram": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "Twitter": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "Reddit": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "GitHub": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "UCC": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "Digital Ocean": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account4": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account5": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account6": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account7": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account8": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account9": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account10": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account11": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account12": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account13": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account14": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account15": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account16": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account17": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account18": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account19": {
+        "user": "test@gmail.com",
+        "pass": "short"
+    },
+    "account20": {
+        "user": "test@gmail.com",
+        "pass": "short"
     }
 }
+// const accountData = {}
 
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
@@ -39,6 +140,10 @@ if (Object.keys(accountData) == 0) {
     }
 }
 
+function showHidePassword() {
+
+}
+
 function createListElement(id, text) {
     const listItem = document.createElement('li')
     const listText = document.createTextNode(text)
@@ -48,17 +153,20 @@ function createListElement(id, text) {
     return listItem
 }
 
-function changeSidebarSelection(accountId) {
-    const selectedAccount = document.getElementById(accountId)
+function changeSidebarSelection(accountName) {
+    // Handle the click on a sidebar item
+    // Changes the password view to match the data from the selected account
+    const selectedAccount = document.getElementById(accountName)
     if (sidebarSelection) {
         sidebarSelection.setAttribute('class', '')
     }
     selectedAccount.setAttribute('class', 'active')
     sidebarSelection = selectedAccount
-    updatePasswordView(accountId)
+    updatePasswordView(accountName)
 }
 
 function updatePasswordView(accountName) {
+    // Update the username, password fields to the specified account info
     const username = accountData[accountName]['user']
     const password = accountData[accountName]['pass']
 
@@ -73,6 +181,7 @@ function updatePasswordView(accountName) {
 }
 
 function initialisePasswordView() {
+    // Create the empty form elements, ready to display account information
     const passwordSection = document.getElementById('passwordView')
 
     const title = document.createElement('h1')
@@ -123,8 +232,8 @@ function initialisePasswordView() {
     // hideButton.setAttribute('onclick', )
     passwordSection.appendChild(hideButton)
 
-    // const editButton = document.createElement('button')
-    // const editButtonText = document.createTextNode('Edit')
-    // editButton.appendChild(editButtonText)
-    // passwordSection.appendChild(editButton)
+    const editButton = document.createElement('button')
+    const editButtonText = document.createTextNode('Edit')
+    editButton.appendChild(editButtonText)
+    passwordSection.appendChild(editButton)
 }
