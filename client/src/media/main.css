@@ -51,12 +51,12 @@ li:hover {
 }
 
 /* Search Bar */
-nav input {
+input[type="text"], input[type="password"], input[type="search"] {
     border: 0.1em solid var(--light-background);
     border-radius: 0.4em;
     margin: 0.5em auto;
     padding: 0.5em;
-    width: 90%;
+    width: 95%;
 }
 input, label {
     display: block;
@@ -71,6 +71,7 @@ button {
 }
 header button {
     background-color: var(--accent);
+    border: 0.1em solid var(--dark-accent);
     color: #fff;
     float: right;
     margin: 0.5em auto;
@@ -78,7 +79,6 @@ header button {
 section button {
     margin: auto 0 0 auto;
 }
-
 
 /* Dark Mode Colour Scheme */
 @media (prefers-color-scheme: dark) {
@@ -95,5 +95,8 @@ section button {
     }
     li:hover {
         background-color: var(--dark-foreground);
+    }
+    header button {
+        border-color: var(--dark-accent);
     }
 }

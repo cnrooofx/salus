@@ -1,15 +1,19 @@
 const accountData = {
     "account1": {
         "user": "test@gmail.com",
-        "pass": "*****"
+        "pass": "short"
     },
     "account2": {
         "user": "test2@gmail.com",
-        "pass": "**********"
+        "pass": "password"
     },
     "account3": {
         "user": "test3@gmail.com",
-        "pass": "*******************"
+        "pass": "longest password"
+    },
+    "Salus": {
+        "user": "admin@salussecurity.live",
+        "pass": "123456789"
     }
 }
 
@@ -22,16 +26,16 @@ if (Object.keys(accountData) == 0) {
 } else {
     initialisePasswordView()
 
-    var idCounter = 0
     for (var account in accountData) {
-        const listElement = createListElement('account' + idCounter, account)
-        listElement.addEventListener('onclick', updatePasswordView)
+        const listElement = createListElement(account, account)
+        listElement.addEventListener('click', (event) => {
+            const accountId = event['target']['id']
+            changeSidebarSelection(accountId)
+        })
         if (sidebarSelection == null) {
-            listElement.setAttribute('class', 'active')
-            updatePasswordView(account)
+            changeSidebarSelection(account)
             sidebarSelection = listElement
         }
-        idCounter++
     }
 }
 
@@ -44,10 +48,14 @@ function createListElement(id, text) {
     return listItem
 }
 
-function changeSidebarSelection(newElement) {
-    sidebarSelection.setAttribute('class', '')
-    newElement.setAttribute('class', 'active')
-    sidebarSelection = newElement
+function changeSidebarSelection(accountId) {
+    const selectedAccount = document.getElementById(accountId)
+    if (sidebarSelection) {
+        sidebarSelection.setAttribute('class', '')
+    }
+    selectedAccount.setAttribute('class', 'active')
+    sidebarSelection = selectedAccount
+    updatePasswordView(accountId)
 }
 
 function updatePasswordView(accountName) {
@@ -103,8 +111,20 @@ function initialisePasswordView() {
     passwordBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(passwordBox)
 
-    const editButton = document.createElement('button')
-    const editButtonText = document.createTextNode('Edit')
-    editButton.appendChild(editButtonText)
-    passwordSection.appendChild(editButton)
+    const hideLabel = document.createElement('label')
+    const hideLabelText = document.createTextNode('Show Password:')
+    hideLabel.setAttribute('for', 'hideButton')
+    hideLabel.appendChild(hideLabelText)
+    passwordSection.appendChild(hideLabel)
+
+    const hideButton = document.createElement('input')
+    hideButton.setAttribute('name', 'hideButton')
+    hideButton.setAttribute('type', 'checkbox')
+    // hideButton.setAttribute('onclick', )
+    passwordSection.appendChild(hideButton)
+
+    // const editButton = document.createElement('button')
+    // const editButtonText = document.createTextNode('Edit')
+    // editButton.appendChild(editButtonText)
+    // passwordSection.appendChild(editButton)
 }
