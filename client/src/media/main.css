@@ -1,49 +1,84 @@
 /* General */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 html {
-    height: 100vh;
     font-family: sans-serif;
+    height: 100vh;
 
-    --light-background: #D1D6DC;
+    --light-background: #E0E3E7;
     --light-foreground: #EEF0F2;
     --dark-background: #1F1F1F;
     --dark-foreground: #333;
     --accent: #317BB3;
     --dark-accent: #7BAFD1;
-    --border: #7a7a7a;
+    --border: #7A7A7A;
 }
 body {
     background-color: var(--light-background);
-    font-family: sans-serif;
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    flex-wrap: wrap;
+    height: 100%;
     margin: 0;
+    overflow: hidden;
     padding: 0;
 }
-nav, main {
-    height: auto;
-    padding: 1em;
-}
 nav {
-    width: 25%;
+    flex-grow: 1;
+    flex-basis: 150px;
+    max-width: 300px;
+    /* padding: 0 1em; */
 }
 main {
     background-color: var(--light-foreground);
-    width: 75%;
+    flex-grow: 3;
+    padding: 1em 1em 1em 1.5em;
+}
+h1 {
+    margin: 0.3em 0;
+}
+
+/* Header */
+header {
+    display: inline-block;
+    flex-basis: 100%;
+    padding: 0.7em;
+    -webkit-app-region: drag;
+}
+header button {
+    background-color: var(--accent);
+    border: 0.1em solid var(--dark-accent);
+    color: #fff;
+    float: right;
+    margin: auto 0;
+    -webkit-app-region: no-drag;
+}
+header button:hover {
+    background-color: #2C516D;
+    border-color: var(--accent);
+    transition: background-color ease-in-out 0.1s;
+    transition: border-color ease-in-out 0.1s;
 }
 
 /* Account List */
 nav ul { 
     list-style: none;
+    margin: auto;
     max-height: 90%;
     overflow: scroll;
-    padding: 0;
+    padding: 0 1.5em;
     scroll-behavior: smooth;
 }
-li {
+nav li {
     border-radius: 0.3em;
-    margin: 0 0.5em;
+    overflow: hidden;
     padding: 0.5em;
+    text-overflow: ellipsis;
+    transition: background-color ease-in-out 0.1s;
+    white-space: nowrap;
     user-select: none;
 }
 .active, li:hover[class="active"] {
@@ -52,16 +87,21 @@ li {
 }
 li:hover {
     background-color: var(--light-foreground);
-    transition: background-color ease-in-out 0.1s;
 }
 
 /* Search Bar */
-input[type="text"], input[type="password"], input[type="search"] {
+input[type="search"] {
+    margin: 0 1.5em 1em 1.5em;
+    width: 85%;
+    
+}
+input[type="text"], input[type="password"] {
+    width: 95%;
+}
+input {
     border: 0.1em solid var(--light-background);
     border-radius: 0.4em;
-    margin: 0.5em auto;
     padding: 0.7em;
-    width: 95%;
 }
 input, label {
     display: block;
@@ -76,13 +116,6 @@ button {
     border: 0.1em solid var(--light-background);
     border-radius: 0.4em;
     padding: 0.5em 0.75em;
-}
-header button {
-    background-color: var(--accent);
-    border: 0.1em solid var(--dark-accent);
-    color: #fff;
-    float: right;
-    margin: 0.5em auto;
 }
 section h1 {
     font-size: 2em;
@@ -99,7 +132,7 @@ main label {
 @media (prefers-color-scheme: dark) {
     body {
         background-color: var(--dark-background);
-        color: white;
+        color: #fff;
     }
     main {
         background-color: var(--dark-foreground);

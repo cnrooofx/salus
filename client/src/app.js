@@ -15,7 +15,8 @@ const createWindow = () => {
         minHeight: 300,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
-        }
+        },
+        titleBarStyle: 'hiddenInset'
     })
     win.webContents.openDevTools()
     win.loadFile(path.join(__dirname, 'login.html'))

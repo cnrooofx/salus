@@ -122,7 +122,7 @@ const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 
 
-if (Object.keys(accountData) == 0) {
+if (Object.keys(accountData) === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
     initialisePasswordView()
@@ -133,7 +133,7 @@ if (Object.keys(accountData) == 0) {
             const accountId = event['target']['id']
             changeSidebarSelection(accountId)
         })
-        if (sidebarSelection == null) {
+        if (sidebarSelection === null) {
             changeSidebarSelection(account)
             sidebarSelection = listElement
         }
