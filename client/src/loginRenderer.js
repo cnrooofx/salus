@@ -1,4 +1,4 @@
-const button = document.getElementById('btn1')
+const button = document.getElementById('login-button')
 
 button.addEventListener('click', async () => {
     const email = 'aidan@ucc.ie'
@@ -6,12 +6,4 @@ button.addEventListener('click', async () => {
     console.log(email)
     const isAuth = await window.electronAPI.authenticateUser(email, password)
     console.log('result is:', isAuth)
-})
-
-const btn = document.getElementById('btn')
-const filePathElement = document.getElementById('filePath')
-
-btn.addEventListener('click', async () => {
-    const filePath = await window.electronAPI.openFile()
-    filePathElement.innerText = filePath
 })

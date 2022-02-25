@@ -39,11 +39,12 @@ app.on('window-all-closed', () => {
 })
 
 async function authenticateUser(event, email, password) {
-    const result = getSalt(email, password)
+    getSalt(email, password)
     if (storage.get('logged-in') == false){
         console.log("login error")
         return false
-    };
+    }
+    return true
 }
 
 function getSalt(email, password) {
