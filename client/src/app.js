@@ -40,7 +40,10 @@ app.on('window-all-closed', () => {
 
 async function authenticateUser(event, email, password) {
     const result = getSalt(email, password)
-    return result
+    if (storage.get('logged-in') == false){
+        console.log("login error")
+        return false
+    };
 }
 
 function getSalt(email, password) {
@@ -67,13 +70,12 @@ function getSalt(email, password) {
         response.on('end', function () {
             if (str != "false") {
                 console.log('Salt Obtained: ' + str)
-                const output = checkCredentials(str, email, password)
-                return output
-               
+                checkCredentials(str, email, password)
+                return true
             }
             else {
                 console.log(str + '\nSalt not Obtained')
-                return false;
+                storage.set('logged-in',false);
             }
         })
     }
@@ -86,7 +88,7 @@ function checkCredentials(salt, email, password) {
     /*
     Method takes in user salt, email and password.
     Generates hashed password and sends off to server along with email.
-    If match what's in database, returns true
+    If match what's in database, set login status to true
     else returns false.
     */
     hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
@@ -114,11 +116,11 @@ function checkCredentials(salt, email, password) {
         response.on('end', function () {
             if (str == "true") {
                 console.log(str + '\nUser Verified')
-                return true;
+                storage.set('logged-in', true);
             }
             else {
                 console.log(str + '\nUser Rejected')
-                return false;
+                storage.set('logged-in', false)
             }
         })
     }
