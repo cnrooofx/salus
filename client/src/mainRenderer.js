@@ -141,7 +141,13 @@ if (Object.keys(accountData) === 0) {
 }
 
 function showHidePassword() {
-
+    const passwordBox = document.getElementById('passwordBox')
+    const type = passwordBox.getAttribute('type')
+    if (type === 'password') {
+        passwordBox.setAttribute('type', 'text')
+    } else {
+        passwordBox.setAttribute('type', 'password')
+    }
 }
 
 function createListElement(id, text) {
@@ -220,11 +226,15 @@ function initialisePasswordView() {
     passwordBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(passwordBox)
 
-    const hideLabel = document.createElement('label')
-    const hideLabelText = document.createTextNode('Show Password:')
-    hideLabel.setAttribute('for', 'hideButton')
-    hideLabel.appendChild(hideLabelText)
-    passwordSection.appendChild(hideLabel)
+    const hideButton = document.createElement('button')
+    const hideButtonText = document.createTextNode('Show Password')
+    hideButton.appendChild(hideButtonText)
+    hideButton.setAttribute('class', 'inline')
+    hideButton.setAttribute('id', 'hideButton')
+    hideButton.addEventListener('click', () => {
+        showHidePassword()
+    })
+    passwordSection.appendChild(hideButton)
 
     const hideButton = document.createElement('input')
     hideButton.setAttribute('name', 'hideButton')
