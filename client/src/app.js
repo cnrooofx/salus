@@ -16,17 +16,38 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },
-        titleBarStyle: 'hiddenInset'
+        titleBarStyle: 'hiddenInset',
+        show: false
     })
     win.webContents.openDevTools()
     win.loadFile(path.join(__dirname, 'login.html'))
     // storage.get('logged-in') ? 
     //     win.loadFile(path.join(__dirname, 'unlock.html')) :
     //     win.loadFile(path.join(__dirname, 'login.html'))
+    win.once('ready-to-show', () => {
+        win.show()
+    })
+}
+
+function createModal(accountId = null) {
+    const focusWindow = BrowserWindow.getAllWindows()[0]
+    const child = new BrowserWindow({
+        parent: focusWindow,
+        modal: true,
+        width: 500,
+        height: focusWindow.height < 500 ? focusWindow.height * 0.7 : 500,
+        maxHeight: 500,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            additionalArguments: [accountId]
+        }
+    })
+    child.loadFile(path.join(__dirname, 'editor.html'))
 }
 
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
+    ipcMain.handle('openEditor', createModal)
     createWindow()
 })
 

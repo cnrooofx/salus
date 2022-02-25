@@ -121,6 +121,11 @@ const accountData = {
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 
+const newItemButton = document.getElementById('newButton')
+newItemButton.addEventListener('click', () => {
+    window.electronAPI.openEditor()
+})
+
 
 if (Object.keys(accountData) === 0) {
     createListElement('empty', 'No Accounts Yet')
@@ -236,14 +241,34 @@ function initialisePasswordView() {
     })
     passwordSection.appendChild(hideButton)
 
-    const hideButton = document.createElement('input')
-    hideButton.setAttribute('name', 'hideButton')
-    hideButton.setAttribute('type', 'checkbox')
-    // hideButton.setAttribute('onclick', )
-    passwordSection.appendChild(hideButton)
+    const urlLabel = document.createElement('label')
+    const urlLabelText = document.createTextNode('Website Address:')
+    urlLabel.setAttribute('for', 'url')
+    urlLabel.appendChild(urlLabelText)
+    passwordSection.appendChild(urlLabel)
+
+    const urlBox = document.createElement('input')
+    urlBox.setAttribute('name', 'url')
+    urlBox.setAttribute('type', 'url')
+    urlBox.setAttribute('id', 'urlBox')
+    urlBox.setAttribute('disabled', 'true')
+    passwordSection.appendChild(urlBox)
+
+    const notesLabel = document.createElement('label')
+    const notesLabelText = document.createTextNode('Notes:')
+    notesLabel.setAttribute('for', 'notes')
+    notesLabel.appendChild(notesLabelText)
+    passwordSection.appendChild(notesLabel)
+
+    const notes = document.createElement('textarea')
+    notes.setAttribute('name', 'notes')
+    passwordSection.appendChild(notes)
 
     const editButton = document.createElement('button')
     const editButtonText = document.createTextNode('Edit')
+    editButton.addEventListener('click', () => {
+        window.electronAPI.openEditor()
+    })
     editButton.appendChild(editButtonText)
     passwordSection.appendChild(editButton)
 }
