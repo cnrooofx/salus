@@ -34,7 +34,7 @@ nav {
 main {
     background-color: var(--light-foreground);
     flex-grow: 2;
-    padding: 1em 1em 1em 1.5em;
+    padding: 1em 1.5em;
 }
 footer {
     display: flex;
@@ -44,9 +44,6 @@ footer {
 }
 h1 {
     margin: 0.3em 0;
-}
-.inline {
-    display: inline;
 }
 
 /* Header */
@@ -72,17 +69,18 @@ header button:hover {
 }
 
 /* Account List */
+nav ul, main {
+    max-height: 92%;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
 nav ul { 
     list-style: none;
     margin: auto;
-    max-height: 90%;
-    overflow: scroll;
     padding: 0 1.5em;
-    /* scroll-behavior: smooth; */
 }
 nav li {
     border-radius: 0.3em;
-    overflow: hidden;
     padding: 0.5em;
     text-overflow: ellipsis;
     transition: background-color ease-in-out 0.1s;
@@ -104,16 +102,20 @@ input[type="search"] {
     
 }
 input[type="text"], input[type="password"], input[type="url"], textarea {
-    width: 95%;
+    width: 100%;
 }
 input, textarea {
+    background-color: #fff;
     border: 0.1em solid var(--light-background);
     border-radius: 0.4em;
     padding: 0.7em;
 }
+textarea {
+    resize: none;
+}
 input, label {
     display: block;
-    margin: 0.5em;
+    margin: 0.5em 0;
 }
 input[name="title"] {
     font-size: 1.2em;

@@ -1,19 +1,17 @@
-const {contextBridge, ipcRenderer} = require('electron')
+const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
     // setTitle: (title) => ipcRenderer.send('set-title', title)
-    authenticateUser: (email, password) => ipcRenderer.invoke('authenticate', email, password),
-    openEditor: () => ipcRenderer.invoke('openEditor')
+    authenticateUser: (email, password) => {
+        ipcRenderer.invoke('authenticate', email, password)
+    },
+    openEditor: (accountId) => {
+        ipcRenderer.invoke('openEditor', accountId)
+    }
 })
 
-// window.addEventListener('DOMContentLoaded', () => {
-//     const loginButton = document.getElementById('login-form')
-//     loginButton.addEventListener('submit', login, 'false')
-
-//     function login(event) {
-//         event.preventDefault()
-//         const email = document.getElementById('email').value
-//         const loginText = document.getElementById('login-text')
-//         loginText.innerHTML = email
-//     }
-// })
+ipcRenderer.on('accountId', (event, accountId) => {
+    if (accountId !== 'undefined') {
+        document.querySelector('body').setAttribute('id', accountId)
+    }
+})

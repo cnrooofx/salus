@@ -1,4 +1,4 @@
-const accountData = {
+var accountData = {
     "account1": {
         "user": "test@gmail.com",
         "pass": "short"
@@ -116,10 +116,11 @@ const accountData = {
         "pass": "short"
     }
 }
-// const accountData = {}
+// var accountData = {}
 
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
+var selectedAccountId = null
 
 const newItemButton = document.getElementById('newButton')
 newItemButton.addEventListener('click', () => {
@@ -127,9 +128,10 @@ newItemButton.addEventListener('click', () => {
 })
 
 
-if (Object.keys(accountData) === 0) {
+if (Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
+    console.log(Object.keys(accountData))
     initialisePasswordView()
 
     for (var account in accountData) {
@@ -141,6 +143,7 @@ if (Object.keys(accountData) === 0) {
         if (sidebarSelection === null) {
             changeSidebarSelection(account)
             sidebarSelection = listElement
+            selectedAccountId = account
         }
     }
 }
@@ -173,6 +176,7 @@ function changeSidebarSelection(accountName) {
     }
     selectedAccount.setAttribute('class', 'active')
     sidebarSelection = selectedAccount
+    selectedAccountId = accountName
     updatePasswordView(accountName)
 }
 
@@ -234,7 +238,6 @@ function initialisePasswordView() {
     const hideButton = document.createElement('button')
     const hideButtonText = document.createTextNode('Show Password')
     hideButton.appendChild(hideButtonText)
-    hideButton.setAttribute('class', 'inline')
     hideButton.setAttribute('id', 'hideButton')
     hideButton.addEventListener('click', () => {
         showHidePassword()
@@ -262,13 +265,16 @@ function initialisePasswordView() {
 
     const notes = document.createElement('textarea')
     notes.setAttribute('name', 'notes')
+    notes.setAttribute('readonly', 'true')
     passwordSection.appendChild(notes)
 
+    const passwordFooter = document.createElement('footer')
     const editButton = document.createElement('button')
     const editButtonText = document.createTextNode('Edit')
     editButton.addEventListener('click', () => {
-        window.electronAPI.openEditor()
+        window.electronAPI.openEditor(selectedAccountId)
     })
     editButton.appendChild(editButtonText)
-    passwordSection.appendChild(editButton)
+    passwordFooter.appendChild(editButton)
+    passwordSection.appendChild(passwordFooter)
 }

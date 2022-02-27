@@ -7,8 +7,11 @@ const crypto = require('crypto')
 const storage = new Store()
 storage.set('logged-in', false)
 
+let win
+let child
+
 const createWindow = () => {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 800,
         height: 600,
         minWidth: 500,
@@ -29,25 +32,30 @@ const createWindow = () => {
     })
 }
 
-function createModal(accountId = null) {
-    const focusWindow = BrowserWindow.getAllWindows()[0]
-    const child = new BrowserWindow({
-        parent: focusWindow,
+function createModal(accountId=null) {
+    child = new BrowserWindow({
+        parent: win,
         modal: true,
         width: 500,
-        height: focusWindow.height < 500 ? focusWindow.height * 0.7 : 500,
+        height: win.height < 500 ? win.height * 0.7 : 500,
         maxHeight: 500,
+        show: false,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: [accountId]
+            preload: path.join(__dirname, 'preload.js')
         }
     })
     child.loadFile(path.join(__dirname, 'editor.html'))
+    child.once('ready-to-show', () => {
+        child.show()
+    })
 }
 
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
-    ipcMain.handle('openEditor', createModal)
+    ipcMain.handle('openEditor', (event, accountId) => {
+        createModal()
+        child.webContents.send('accountId', accountId)
+    })
     createWindow()
 })
 
