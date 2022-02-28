@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-ie">
+    <head>
+        <title>Salus</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+        <link rel="stylesheet" href="media/main.css">
+    </head>
+    <body>
+        <main>
+            <form>
+                <input name="title" type="text" placeholder="Title"/>
+                <label for="username">Username:</label>
+                <input name="username" type="text" />
+                <label for="password">Password:</label>
+                <input name="password" type="password" />
+                <label for="url">Website Address:</label>
+                <input name="url" type="url" />
+                <label for="notes">Notes:</label>
+                <textarea name="notes"></textarea>
+            </form>
+        </main>
+        <footer>
+            <button id="save">Save</button>
+            <button id="cancel">Cancel</button>
+        </footer>
+        <script type="module" src="editorRenderer.js"></script>
+    </body>
+</html>

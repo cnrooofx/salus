@@ -8,8 +8,11 @@ const storage = new Store()
 console.log(storage.get('logged-in'))
 var iCounter = 0
 
+let win
+let child
+
 const createWindow = () => {
-    const win = new BrowserWindow({
+    win = new BrowserWindow({
         width: 800,
         height: 600,
         minWidth: 500,
@@ -17,7 +20,8 @@ const createWindow = () => {
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         },
-        titleBarStyle: 'hiddenInset'
+        titleBarStyle: 'hiddenInset',
+        show: false
     })
     win.webContents.openDevTools()
     
@@ -30,11 +34,36 @@ const createWindow = () => {
     } else {
         win.loadFile(path.join(__dirname, 'login.html')) 
     }
+    win.once('ready-to-show', () => {
+        win.show()
+    })
+}
+
+function createModal(accountId=null) {
+    child = new BrowserWindow({
+        parent: win,
+        modal: true,
+        width: 500,
+        height: win.height < 500 ? win.height * 0.7 : 500,
+        maxHeight: 500,
+        show: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        }
+    })
+    child.loadFile(path.join(__dirname, 'editor.html'))
+    child.once('ready-to-show', () => {
+        child.show()
+    })
 }
 
 
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
+    ipcMain.handle('openEditor', (event, accountId) => {
+        createModal()
+        child.webContents.send('accountId', accountId)
+    })
     createWindow()
 })
 

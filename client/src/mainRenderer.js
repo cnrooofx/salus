@@ -1,4 +1,4 @@
-const accountData = {
+var accountData = {
     "account1": {
         "user": "test@gmail.com",
         "pass": "short"
@@ -116,15 +116,22 @@ const accountData = {
         "pass": "short"
     }
 }
-// const accountData = {}
+// var accountData = {}
 
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
+var selectedAccountId = null
+
+const newItemButton = document.getElementById('newButton')
+newItemButton.addEventListener('click', () => {
+    window.electronAPI.openEditor()
+})
 
 
-if (Object.keys(accountData) === 0) {
+if (Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
+    console.log(Object.keys(accountData))
     initialisePasswordView()
 
     for (var account in accountData) {
@@ -136,12 +143,19 @@ if (Object.keys(accountData) === 0) {
         if (sidebarSelection === null) {
             changeSidebarSelection(account)
             sidebarSelection = listElement
+            selectedAccountId = account
         }
     }
 }
 
 function showHidePassword() {
-
+    const passwordBox = document.getElementById('passwordBox')
+    const type = passwordBox.getAttribute('type')
+    if (type === 'password') {
+        passwordBox.setAttribute('type', 'text')
+    } else {
+        passwordBox.setAttribute('type', 'password')
+    }
 }
 
 function createListElement(id, text) {
@@ -162,6 +176,7 @@ function changeSidebarSelection(accountName) {
     }
     selectedAccount.setAttribute('class', 'active')
     sidebarSelection = selectedAccount
+    selectedAccountId = accountName
     updatePasswordView(accountName)
 }
 
@@ -220,20 +235,46 @@ function initialisePasswordView() {
     passwordBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(passwordBox)
 
-    const hideLabel = document.createElement('label')
-    const hideLabelText = document.createTextNode('Show Password:')
-    hideLabel.setAttribute('for', 'hideButton')
-    hideLabel.appendChild(hideLabelText)
-    passwordSection.appendChild(hideLabel)
-
-    const hideButton = document.createElement('input')
-    hideButton.setAttribute('name', 'hideButton')
-    hideButton.setAttribute('type', 'checkbox')
-    // hideButton.setAttribute('onclick', )
+    const hideButton = document.createElement('button')
+    const hideButtonText = document.createTextNode('Show Password')
+    hideButton.appendChild(hideButtonText)
+    hideButton.setAttribute('id', 'hideButton')
+    hideButton.addEventListener('click', () => {
+        showHidePassword()
+    })
     passwordSection.appendChild(hideButton)
 
+    const urlLabel = document.createElement('label')
+    const urlLabelText = document.createTextNode('Website Address:')
+    urlLabel.setAttribute('for', 'url')
+    urlLabel.appendChild(urlLabelText)
+    passwordSection.appendChild(urlLabel)
+
+    const urlBox = document.createElement('input')
+    urlBox.setAttribute('name', 'url')
+    urlBox.setAttribute('type', 'url')
+    urlBox.setAttribute('id', 'urlBox')
+    urlBox.setAttribute('disabled', 'true')
+    passwordSection.appendChild(urlBox)
+
+    const notesLabel = document.createElement('label')
+    const notesLabelText = document.createTextNode('Notes:')
+    notesLabel.setAttribute('for', 'notes')
+    notesLabel.appendChild(notesLabelText)
+    passwordSection.appendChild(notesLabel)
+
+    const notes = document.createElement('textarea')
+    notes.setAttribute('name', 'notes')
+    notes.setAttribute('readonly', 'true')
+    passwordSection.appendChild(notes)
+
+    const passwordFooter = document.createElement('footer')
     const editButton = document.createElement('button')
     const editButtonText = document.createTextNode('Edit')
+    editButton.addEventListener('click', () => {
+        window.electronAPI.openEditor(selectedAccountId)
+    })
     editButton.appendChild(editButtonText)
-    passwordSection.appendChild(editButton)
+    passwordFooter.appendChild(editButton)
+    passwordSection.appendChild(passwordFooter)
 }
