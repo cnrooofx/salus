@@ -1,122 +1,5 @@
-var accountData = {
-    "account1": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account2": {
-        "user": "test2@gmail.com",
-        "pass": "password"
-    },
-    "account3": {
-        "user": "test3@gmail.com",
-        "pass": "longest password"
-    },
-    "Salus": {
-        "user": "admin@salussecurity.live",
-        "pass": "123456789"
-    },
-    "Google": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Facebook": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Instagram": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Twitter": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Reddit": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "GitHub": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "UCC": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Digital Ocean": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account4": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account5": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account6": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account7": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account8": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account9": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account10": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account11": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account12": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account13": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account14": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account15": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account16": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account17": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account18": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account19": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account20": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    }
-}
-// var accountData = {}
+window.electronAPI.accessPasswords()
+const accountData = JSON.parse(window.localStorage.getItem('passwords'))
 
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
@@ -127,11 +10,9 @@ newItemButton.addEventListener('click', () => {
     window.electronAPI.openEditor()
 })
 
-
 if (Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
-    console.log(Object.keys(accountData))
     initialisePasswordView()
 
     for (var account in accountData) {
@@ -149,12 +30,15 @@ if (Object.keys(accountData).length === 0) {
 }
 
 function showHidePassword() {
-    const passwordBox = document.getElementById('passwordBox')
+    const passwordBox = document.getElementById('password')
+    const hideButton = document.getElementById('hideButton')
     const type = passwordBox.getAttribute('type')
     if (type === 'password') {
         passwordBox.setAttribute('type', 'text')
+        hideButton.innerHTML = 'Hide Password'
     } else {
         passwordBox.setAttribute('type', 'password')
+        hideButton.innerHTML = 'Show Password'
     }
 }
 
@@ -182,17 +66,25 @@ function changeSidebarSelection(accountName) {
 
 function updatePasswordView(accountName) {
     // Update the username, password fields to the specified account info
-    const username = accountData[accountName]['user']
-    const password = accountData[accountName]['pass']
+    const username = accountData[accountName]['username']
+    const password = accountData[accountName]['password']
+    const url = accountData[accountName]['url']
+    const notes = accountData[accountName]['notes']
 
-    const accountTitle = document.getElementById('accountTitle')
+    const accountTitle = document.getElementById('title')
     accountTitle.innerHTML = accountName
 
-    const usernameBox = document.getElementById('usernameBox')
+    const usernameBox = document.getElementById('username')
     usernameBox.setAttribute('value', username)
 
-    const passwordBox = document.getElementById('passwordBox')
+    const passwordBox = document.getElementById('password')
     passwordBox.setAttribute('value', password)
+
+    const urlBox = document.getElementById('url')
+    urlBox.setAttribute('value', url)
+
+    const notesBox = document.getElementById('notes')
+    notesBox.innerHTML = notes
 }
 
 function initialisePasswordView() {
@@ -200,8 +92,9 @@ function initialisePasswordView() {
     const passwordSection = document.getElementById('passwordView')
 
     const title = document.createElement('h1')
-    const titleText = document.createTextNode('title')
-    title.setAttribute('id', 'accountTitle')
+    const titleText = document.createTextNode('')
+    title.setAttribute('id', 'title')
+    title.setAttribute('value', '')
     title.appendChild(titleText)
     passwordSection.appendChild(title)
 
@@ -216,8 +109,8 @@ function initialisePasswordView() {
     const usernameBox = document.createElement('input')
     usernameBox.setAttribute('name', 'username')
     usernameBox.setAttribute('type', 'text')
-    usernameBox.setAttribute('value', 'username123')
-    usernameBox.setAttribute('id', 'usernameBox')
+    usernameBox.setAttribute('value', '')
+    usernameBox.setAttribute('id', 'username')
     usernameBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(usernameBox)
 
@@ -230,8 +123,8 @@ function initialisePasswordView() {
     const passwordBox = document.createElement('input')
     passwordBox.setAttribute('name', 'password')
     passwordBox.setAttribute('type', 'password')
-    passwordBox.setAttribute('value', 'passwordpassword')
-    passwordBox.setAttribute('id', 'passwordBox')
+    passwordBox.setAttribute('value', '')
+    passwordBox.setAttribute('id', 'password')
     passwordBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(passwordBox)
 
@@ -253,7 +146,7 @@ function initialisePasswordView() {
     const urlBox = document.createElement('input')
     urlBox.setAttribute('name', 'url')
     urlBox.setAttribute('type', 'url')
-    urlBox.setAttribute('id', 'urlBox')
+    urlBox.setAttribute('id', 'url')
     urlBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(urlBox)
 
@@ -264,6 +157,7 @@ function initialisePasswordView() {
     passwordSection.appendChild(notesLabel)
 
     const notes = document.createElement('textarea')
+    notes.setAttribute('id', 'notes')
     notes.setAttribute('name', 'notes')
     notes.setAttribute('readonly', 'true')
     passwordSection.appendChild(notes)
