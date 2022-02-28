@@ -1,0 +1,41 @@
+html {
+    --light-background: #D1D6DC;
+    --light-foreground: #EEF0F2;
+    --light-accent: #317BB3;
+    --dark-background: #1F1F1F;
+    --dark-foreground: #333;
+    --dark-accent: #7BAFD1;
+}
+
+body {
+    background-color: var(--light-background);
+    font-family: sans-serif;
+}
+
+main {
+    background-color: var(--light-foreground);
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    padding: 1em;
+    border-radius: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0.5em 0.5em #ccc;
+}
+
+input {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    padding: 0.3em;
+}
+
+input, label {
+    display: block;
+    margin: 0.5em;
+}
+
+input[type="submit"] {
+    margin: 1em auto;
+}
