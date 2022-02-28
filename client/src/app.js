@@ -8,6 +8,12 @@ const storage = new Store()
 console.log(storage.get('logged-in'))
 var iCounter = 0
 
+storage.set('passwords', {'account1': {
+    'username': 'username',
+    'password': 'password',
+    'url': 'url',
+    'notes': 'notes'
+}})
 let win
 let child
 
@@ -25,21 +31,22 @@ const createWindow = () => {
     })
     win.webContents.openDevTools()
     
-    if (storage.get('logged-in')) { 
-        win.loadFile(path.join(__dirname, 'unlock.html'))
-        win.webContents.on('did-finish-load', () => {
-            userEmail = storage.get('userEmail')
-            win.webContents.send("setWelcomeEmail", userEmail)
-        })
-    } else {
-        win.loadFile(path.join(__dirname, 'login.html')) 
-    }
+    win.loadFile(path.join(__dirname, 'main.html'))
+    // if (storage.get('logged-in')) { 
+    //     win.loadFile(path.join(__dirname, 'unlock.html'))
+    //     win.webContents.on('did-finish-load', () => {
+    //         let userEmail = storage.get('userEmail')
+    //         win.webContents.send("setWelcomeEmail", userEmail)
+    //     })
+    // } else {
+    //     win.loadFile(path.join(__dirname, 'login.html')) 
+    // }
     win.once('ready-to-show', () => {
         win.show()
     })
 }
 
-function createModal(accountId=null) {
+function createModal() {
     child = new BrowserWindow({
         parent: win,
         modal: true,
@@ -51,10 +58,9 @@ function createModal(accountId=null) {
             preload: path.join(__dirname, 'preload.js')
         }
     })
+    child.webContents.openDevTools()
     child.loadFile(path.join(__dirname, 'editor.html'))
-    child.once('ready-to-show', () => {
-        child.show()
-    })
+    child.once('ready-to-show', () => child.show())
 }
 
 
@@ -64,6 +70,8 @@ app.whenReady().then(() => {
         createModal()
         child.webContents.send('accountId', accountId)
     })
+    ipcMain.on('accessPasswords', accessPasswords)
+    ipcMain.on('updatePasswords', updatePasswords)
     createWindow()
 })
 
@@ -166,4 +174,17 @@ function checkCredentials(salt, email, password) {
     var req = https.request(options, callback);
     req.write(toSend);
     req.end();
+}
+
+async function accessPasswords() {
+    if (storage.has('passwords')) {
+        const passwords = storage.get('passwords')
+        win.webContents.send('passwordData', JSON.stringify(passwords))
+    }
+}
+
+async function updatePasswords(event, updatedPasswords) {
+    // console.log(updatedPasswords)
+    storage.set('passwords', updatedPasswords)
+    win.webContents.send('passwordUpdate')
 }
