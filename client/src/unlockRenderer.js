@@ -6,3 +6,6 @@ button.addEventListener('click', async () => {
     console.log(email)
     const isAuth = await window.electronAPI.authenticateUser(email, password)
 })
+window.electronAPI.setWelcomeEmail((event, email) => {
+    document.querySelector('#email').setAttribute('value', email)
+})

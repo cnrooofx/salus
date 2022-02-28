@@ -5,7 +5,8 @@ const https = require('https')
 const crypto = require('crypto')
 
 const storage = new Store()
-storage.set('logged-in', false)
+console.log(storage.get('logged-in'))
+var iCounter = 0
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -19,11 +20,18 @@ const createWindow = () => {
         titleBarStyle: 'hiddenInset'
     })
     win.webContents.openDevTools()
-    win.loadFile(path.join(__dirname, 'login.html'))
-    // storage.get('logged-in') ? 
-    //     win.loadFile(path.join(__dirname, 'unlock.html')) :
-    //     win.loadFile(path.join(__dirname, 'login.html'))
+    
+    if (storage.get('logged-in')) { 
+        win.loadFile(path.join(__dirname, 'unlock.html'))
+        win.webContents.on('did-finish-load', () => {
+            userEmail = storage.get('userEmail')
+            win.webContents.send("setWelcomeEmail", userEmail)
+        })
+    } else {
+        win.loadFile(path.join(__dirname, 'login.html')) 
+    }
 }
+
 
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
@@ -44,6 +52,7 @@ async function authenticateUser(event, email, password) {
         console.log("login error")
         return false
     }
+    storage.set('userEmail', email)
     return true
 }
 
@@ -117,7 +126,7 @@ function checkCredentials(salt, email, password) {
         response.on('end', function () {
             if (str == "true") {
                 console.log(str + '\nUser Verified')
-                storage.set('logged-in', true);
+                storage.set('logged-in', true)
             }
             else {
                 console.log(str + '\nUser Rejected')
