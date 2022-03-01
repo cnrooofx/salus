@@ -97,3 +97,6 @@ section button {
         background-color: var(--dark-foreground);
     }
 }
+html, body, nav, main {
+    max-height: 300px;
+}

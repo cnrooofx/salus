@@ -5,12 +5,14 @@
     padding: 0;
 }
 html {
+    min-width: 600px;
+    overflow: hidden;
     --light-background: #E0E3E7;
     --light-foreground: #EEF0F2;
     --dark-background: #1F1F1F;
     --dark-foreground: #333;
     --accent: #317BB3;
-    --dark-accent: #7BAFD1;
+    --dark-accent: #7BAFD1; 
     --border: #7A7A7A;
 }
 body {
@@ -19,7 +21,7 @@ body {
     font-family: sans-serif;
     flex-direction: row;
     flex-wrap: wrap;
-    height: 100vh;
+    height: 100%;
     margin: 0;
     overflow: hidden;
     padding: 0;
@@ -70,8 +72,8 @@ header button:hover {
 
 /* Account List */
 nav ul, main {
-    max-height: 92%;
-    overflow: scroll;
+    height: 92%;
+    overflow-y: scroll;
     scroll-behavior: smooth;
 }
 nav ul { 
@@ -97,7 +99,7 @@ li:hover {
 
 /* Search Bar */
 input[type="search"] {
-    margin: 0 1.5em 1em 1.5em;
+    margin: 1em 1.5em;
     width: 85%;
     
 }
@@ -140,4 +142,26 @@ section button {
 main label {
     font-size: 0.8em;
     font-weight: lighter;
+}
+
+/* Dark Mode Colour Scheme */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-background);
+        color: white;
+    }
+    main {
+        background-color: var(--dark-foreground);
+        box-shadow: none;
+    }
+    li:hover[class="active"], .active {
+        background-color: var(--accent);
+    }
+    li:hover {
+        background-color: var(--dark-foreground);
+    }
+}
+
+html, nav, body, main, ul {
+    max-height: 400px;
 }
