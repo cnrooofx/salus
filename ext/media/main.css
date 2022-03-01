@@ -1,0 +1,143 @@
+/* General */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html {
+    --light-background: #E0E3E7;
+    --light-foreground: #EEF0F2;
+    --dark-background: #1F1F1F;
+    --dark-foreground: #333;
+    --accent: #317BB3;
+    --dark-accent: #7BAFD1;
+    --border: #7A7A7A;
+}
+body {
+    background-color: var(--light-background);
+    display: flex;
+    font-family: sans-serif;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+nav {
+    flex-grow: 1;
+    flex-basis: 150px;
+    height: 90%;
+    max-width: 300px;
+    /* padding: 0 1em; */
+}
+main {
+    background-color: var(--light-foreground);
+    flex-grow: 2;
+    padding: 1em 1.5em;
+}
+footer {
+    display: flex;
+    flex-basis: 100%;
+    height: fit-content;
+    padding: 0.7em;
+}
+h1 {
+    margin: 0.3em 0;
+}
+
+/* Header */
+header {
+    display: inline-block;
+    flex-basis: 100%;
+    padding: 0.7em;
+    -webkit-app-region: drag;
+}
+header button {
+    background-color: var(--accent);
+    border: 0.1em solid var(--dark-accent);
+    color: #fff;
+    float: right;
+    margin: auto 0;
+    -webkit-app-region: no-drag;
+}
+header button:hover {
+    background-color: #2C516D;
+    border-color: var(--accent);
+    transition: background-color ease-in-out 0.1s;
+    transition: border-color ease-in-out 0.1s;
+}
+
+/* Account List */
+nav ul, main {
+    max-height: 92%;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
+nav ul { 
+    list-style: none;
+    margin: auto;
+    padding: 0 1.5em;
+}
+nav li {
+    border-radius: 0.3em;
+    padding: 0.5em;
+    text-overflow: ellipsis;
+    transition: background-color ease-in-out 0.1s;
+    white-space: nowrap;
+    user-select: none;
+}
+.active, li:hover[class="active"] {
+    background-color: var(--accent);
+    color: #fff;
+}
+li:hover {
+    background-color: var(--light-foreground);
+}
+
+/* Search Bar */
+input[type="search"] {
+    margin: 0 1.5em 1em 1.5em;
+    width: 85%;
+    
+}
+input[type="text"], input[type="password"], input[type="url"], textarea {
+    width: 100%;
+}
+input, textarea {
+    background-color: #fff;
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    padding: 0.7em;
+}
+textarea {
+    resize: none;
+}
+input, label {
+    display: block;
+    margin: 0.5em 0;
+}
+input[name="title"] {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Main View */
+hr {
+    margin-bottom: 1em;
+}
+button {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    padding: 0.5em 0.75em;
+}
+section h1 {
+    font-size: 2em;
+}
+section button {
+    margin: auto 0 0 auto;
+}
+main label {
+    font-size: 0.8em;
+    font-weight: lighter;
+}

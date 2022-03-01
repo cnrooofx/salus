@@ -1,9 +1,8 @@
 // Initialize button with user's preferred color
 let loginBut = document.getElementById("loginBut");
 
-chrome.storage.sync.get("color", ({ color }) => {
-  loginBut.style.backgroundColor = color;
-});
+
+
 async function postData(url = '', data = {}) {
     // Default options are marked with *
     const response = await fetch(url, {
@@ -22,22 +21,15 @@ async function postData(url = '', data = {}) {
     return response.json(); // parses JSON response into native JavaScript objects
   }
 
-function changePopup(){
-    chrome.browserAction.setPopup({
-       popup:"main.html"
-    });
-}
 
 loginBut.addEventListener("click", async () => {
-
-    postData('http://salussecurity.live:5000/login', { "email":"aidan@u1cc.ie","pass": "fuwbfuwbfuwb"})
+  login_success();
+    var email = document.getElementById('email').value;
+    var pass = document.getElementById('password').value;
+    postData('http://salussecurity.live:5000/login', { "email":email,"pass":pass})
   .then(data => {
     if (data != false){
-        document.getElementById("p1").innerHTML = data // JSON data parsed by `data.json()` call
-        changePopup();
-    }
-    else {
-        document.getElementById("p1").innerHTML = "False"
+      login_success();
     }
   });
     });

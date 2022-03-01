@@ -4,11 +4,12 @@
     "version": "1.0",
     "manifest_version": 3,
     "options_page": "options.html",
+    "host_permissions": [
+      "http://salussecurity.live:5000/*"
+  ],
     "background": {
         "service_worker": "background.js"
       },
       "permissions": ["storage", "activeTab", "scripting"],
-    "action": {
-    "default_popup": "popup.html"
-  }
+    "action": {}
   }

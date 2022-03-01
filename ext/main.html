@@ -2,31 +2,23 @@
 <!DOCTYPE html>
 <html lang="en-ie">
     <head>
+        <title>Salus</title>
         <meta charset="utf-8" />
         <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
         <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
         <link rel="stylesheet" href="media/main.css">
     </head>
     <body>
+        <header>
+            <button id="newButton">New +</button>
+        </header>
         <nav id="navbar">
-            <input type="text" placeholder="Search" />
+            <input type="search" placeholder="Search" autofocus />
             <ul id="sidebar">
             </ul>
         </nav>
         <main>
-            <header>
-                <button id="newButton">New +</button>
-            </header>
             <section id="passwordView">
-                <h1 id="accountTitle">Account 1</h1>
-                <hr />
-                <label for="username">Username:</label>
-                <input name="username" type="text" value="username" id="usernameBox" disabled />
-                <label for="password">Password:</label>
-                <input name="password" type="password" value="password" id="passwordBox" disabled />
-                <label for="show">Show Password:</label>
-                <input name="show" type="checkbox" onclick="showPassword()" />
-                <button id="editButton">Edit</button>
             </section>
         </main>
         <script type="module" src="scripts/main.js"></script>
