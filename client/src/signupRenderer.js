@@ -13,10 +13,12 @@ function set_credentials(email, password) {
     this.email = email
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
+    const iv = crypto.randomBytes(16);
     const data = JSON.stringify({
         "email": email,
         "salt": salt,
-        "pass": hash
+        "pass": hash,
+        "iv": iv
     })
     post_to_server(data)
 }
@@ -57,4 +59,5 @@ function post_to_server(info) {
     req.end();
 }
 
-set_credentials("conorbradley45@gmail.com", "1234")
+
+

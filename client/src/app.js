@@ -63,7 +63,6 @@ function createModal() {
     child.once('ready-to-show', () => child.show())
 }
 
-
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
     ipcMain.handle('openEditor', (event, accountId) => {
@@ -74,6 +73,7 @@ app.whenReady().then(() => {
     ipcMain.on('updatePasswords', updatePasswords)
     createWindow()
 })
+
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -93,6 +93,13 @@ async function authenticateUser(event, email, password) {
     return true
 }
 
+//=====================================================================
+//User Authentication
+//=====================================================================
+/*
+Checks for users email in database and returns salt value. (If email exists)
+Passes email, password and salt to check credentials to validate password.
+*/
 function getSalt(email, password) {
     const toSend = JSON.stringify({
         "email": email,
@@ -130,14 +137,14 @@ function getSalt(email, password) {
     req.write(toSend);
     req.end();
 }
-//=====================================================================
+
+/*
+Method takes in user salt, email and password.
+Generates hashed password and sends off to server along with email.
+If match what's in database, set login status to true
+else returns false.
+*/
 function checkCredentials(salt, email, password) {
-    /*
-    Method takes in user salt, email and password.
-    Generates hashed password and sends off to server along with email.
-    If match what's in database, set login status to true
-    else returns false.
-    */
     hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
     console.log("Hashed Password: " + hash);
     const toSend = JSON.stringify({
@@ -161,9 +168,11 @@ function checkCredentials(salt, email, password) {
             str += chunk;
         });
         response.on('end', function () {
-            if (str == "true") {
-                console.log(str + '\nUser Verified')
-                storage.set('logged-in', true)
+            if (str != "false") {
+                console.log('User Verified');
+                console.log(str);
+                storage.set('logged-in', true);
+                storage.set('usr_data', str);
             }
             else {
                 console.log(str + '\nUser Rejected')
@@ -188,3 +197,136 @@ async function updatePasswords(event, updatedPasswords) {
     storage.set('passwords', updatedPasswords)
     win.webContents.send('passwordUpdate')
 }
+//=====================================================================
+// Getting and Sending user data to server
+//=====================================================================
+/*
+Method takes in user id.
+If match what's in database, return user's id + data.
+*/
+function getData() {
+    const data = JSON.parse(storage.get('user_data'));
+    const toSend = JSON.stringify({
+        "id": data['_id']
+    })
+    var options = {
+        host: 'www.salussecurity.live',
+        port: 5443,
+        path: '/password',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/JSON',
+            'Content-Length': toSend.length
+        }
+    };
+
+    callback = function (response) {
+        var str = "";
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+        response.on('end', function () {
+            if (str != "") {
+                console.log(str)
+                storage.set('passwords',JSON.parse(str)["pass"])
+            }
+            else {
+                console.log(str + '\nUser Rejected')
+            }
+        })
+    }
+    var req = https.request(options, callback);
+    req.write(toSend);
+    req.end();
+}
+
+/*
+Method takes in user id.
+If match what's in database, updates user's data.
+*/
+function sendData() {
+    const data = JSON.parse(storage.get('user_data'));
+    const toSend = JSON.stringify({
+        "id": data['_id'],
+        "pass": encrypt(storage.get('passwords'),generate_key(data['password'],data['salt']),data['iv'])
+    })
+    var options = {
+        host: 'www.salussecurity.live',
+        port: 5443,
+        path: '/send_password',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/JSON',
+            'Content-Length': toSend.length
+        }
+    };
+
+    callback = function (response) {
+        var str = "";
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+        response.on('end', function () {
+            if (str != "") {
+                console.log(str)
+                storage.set('passwords',str["pass"])
+            }
+            else {
+                console.log(str + '\nUser Rejected')
+            }
+        })
+    }
+    var req = https.request(options, callback);
+    req.write(toSend);
+    req.end();
+}
+
+//=====================================================================
+//Encryption & Decryption Of User Passwords + Key generation
+//=====================================================================
+//Uses user's hashed password and salt to generate a symmetric key.
+function generate_key(){
+    const data = JSON.parse(storage.get('user_data'))
+    const password = data['password'];
+    const salt = data['salt'];
+    const key = crypto.scryptSync(password, salt, 24);
+    return key
+}
+
+//Encrypts and returns a message
+//Generates key and gets iv from user_data in electron storage
+function encrypt(msg){
+    const data = JSON.parse(storage.get('user_data'));
+    const iv = data['iv'];
+    const key = generate_key();
+    const algorithm = 'aes-192-cbc';
+    const cipher = crypto.createCipheriv(algorithm,key,iv);
+    cipher.write(msg);
+    cipher.end();
+    out="";
+    out += cipher.read().toString('hex');
+    //console.log(out);
+    return out;
+}
+
+//Decrypts and returns encrypted message
+//Generates key and gets iv from user_data in electron storage
+function decrypt(encrypted_msg){
+    const data = JSON.parse(storage.get('user_data'));
+    const iv = data['iv'];
+    const key = generate_key();
+    const algorithm = 'aes-192-cbc';
+    const decipher = crypto.createDecipheriv(algorithm, key, iv)
+    decipher.write(encrypted_msg, 'hex')
+    decipher.end();
+    out = "";
+    out += decipher.read().toString('utf8');
+    return out;
+}
+
+//=====================================================================
+
+
+//add key, iv to database
+//add key, iv to user data package being sent back on login
+//add update passwords request to server... takes id and new password package
