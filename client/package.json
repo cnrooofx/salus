@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^8.0.1"
+    "electron-store": "^8.0.1",
+    "generate-password": "^1.7.0"
   },
   "config": {
     "forge": {

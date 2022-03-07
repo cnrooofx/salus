@@ -1,21 +1,20 @@
-window.electronAPI.accessPasswords()
-const accountData = JSON.parse(window.localStorage.getItem('passwords'))
-
-const sidebar = document.getElementById('sidebar')
-var sidebarSelection = null
-var selectedAccountId = null
-
 const newItemButton = document.getElementById('newButton')
 newItemButton.addEventListener('click', () => {
     window.electronAPI.openEditor()
 })
+const sidebar = document.getElementById('sidebar')
+var sidebarSelection = null
+var selectedAccountId = null
+var accountData
 
-if (Object.keys(accountData).length === 0) {
+getPasswords()
+if (accountData === null || Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
     initialisePasswordView()
 
     for (var account in accountData) {
+        console.log(account)
         const listElement = createListElement(account, account)
         listElement.addEventListener('click', (event) => {
             const accountId = event['target']['id']
@@ -27,6 +26,14 @@ if (Object.keys(accountData).length === 0) {
             selectedAccountId = account
         }
     }
+}
+
+function getPasswords() {
+    window.localStorage.removeItem('passwords')
+    window.electronAPI.accessPasswords()
+    accountData = JSON.parse(window.localStorage.getItem('passwords'))
+    window.localStorage.removeItem('passwords')
+    console.log(accountData)
 }
 
 function showHidePassword() {

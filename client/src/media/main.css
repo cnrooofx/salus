@@ -70,7 +70,7 @@ header button:hover {
 
 /* Account List */
 nav ul, main {
-    max-height: 92%;
+    height: 92%;
     overflow: scroll;
     scroll-behavior: smooth;
 }
@@ -137,9 +137,29 @@ section h1 {
 section button {
     margin: auto 0 0 auto;
 }
-main label {
+main label, legend {
     font-size: 0.8em;
     font-weight: lighter;
+}
+
+/* Editor */
+
+fieldset {
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.4em;
+    padding: 0.5em;
+}
+fieldset input, fieldset label {
+    display: inline;
+    width: auto;
+}
+fieldset button {
+    background-color: var(--accent);
+    color: #fff;
+    margin: 0 1em;
+}
+#password, #editorPassword {
+    font-family: monospace;
 }
 
 /* Dark Mode Colour Scheme */

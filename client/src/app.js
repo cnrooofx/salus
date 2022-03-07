@@ -3,17 +3,18 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const Store = require('electron-store')
 const https = require('https')
 const crypto = require('crypto')
+var generator = require('generate-password')
 
 const storage = new Store()
 console.log(storage.get('logged-in'))
 var iCounter = 0
 
-storage.set('passwords', {'account1': {
-    'username': 'username',
-    'password': 'password',
-    'url': 'url',
-    'notes': 'notes'
-}})
+// storage.set('passwords', {'account1': {
+//     'username': 'username',
+//     'password': 'password',
+//     'url': 'url',
+//     'notes': 'notes'
+// }})
 let win
 let child
 
@@ -29,28 +30,26 @@ const createWindow = () => {
         titleBarStyle: 'hiddenInset',
         show: false
     })
-    win.webContents.openDevTools()
+    // win.webContents.openDevTools()
     
-    win.loadFile(path.join(__dirname, 'main.html'))
-    // if (storage.get('logged-in')) { 
-    //     win.loadFile(path.join(__dirname, 'unlock.html'))
-    //     win.webContents.on('did-finish-load', () => {
-    //         let userEmail = storage.get('userEmail')
-    //         win.webContents.send("setWelcomeEmail", userEmail)
-    //     })
-    // } else {
-    //     win.loadFile(path.join(__dirname, 'login.html')) 
-    // }
-    win.once('ready-to-show', () => {
-        win.show()
-    })
+    // win.loadFile(path.join(__dirname, 'main.html'))
+    if (storage.get('logged-in')) { 
+        win.loadFile(path.join(__dirname, 'unlock.html'))
+        win.webContents.on('did-finish-load', () => {
+            let userEmail = storage.get('userEmail')
+            win.webContents.send("setWelcomeEmail", userEmail)
+        })
+    } else {
+        win.loadFile(path.join(__dirname, 'login.html')) 
+    }
+    win.once('ready-to-show', () => win.show())
 }
 
 function createModal() {
     child = new BrowserWindow({
         parent: win,
         modal: true,
-        width: 500,
+        width: 550,
         height: win.height < 500 ? win.height * 0.7 : 500,
         maxHeight: 500,
         show: false,
@@ -58,19 +57,22 @@ function createModal() {
             preload: path.join(__dirname, 'preload.js')
         }
     })
-    child.webContents.openDevTools()
+    // child.webContents.openDevTools()
     child.loadFile(path.join(__dirname, 'editor.html'))
     child.once('ready-to-show', () => child.show())
 }
 
 app.whenReady().then(() => {
     ipcMain.handle('authenticate', authenticateUser)
-    ipcMain.handle('openEditor', (event, accountId) => {
+    ipcMain.on('openEditor', (event, accountId) => {
         createModal()
         child.webContents.send('accountId', accountId)
     })
+    ipcMain.on('generatePassword', (event, length, numbers, symbols) => {
+        generatePassword(length, numbers, symbols)
+    })
     ipcMain.on('accessPasswords', accessPasswords)
-    ipcMain.on('updatePasswords', updatePasswords)
+    // ipcMain.on('updatePasswords', updatePasswords)
     createWindow()
 })
 
@@ -185,18 +187,32 @@ function checkCredentials(salt, email, password) {
     req.end();
 }
 
-async function accessPasswords() {
+function accessPasswords() {
     if (storage.has('passwords')) {
         const passwords = storage.get('passwords')
         win.webContents.send('passwordData', JSON.stringify(passwords))
+        if (child) {
+            child.webContents.send('passwordData', JSON.stringify(passwords))
+        }
     }
 }
 
-async function updatePasswords(event, updatedPasswords) {
+function updatePasswords(event, updatedPasswords) {
     // console.log(updatedPasswords)
     storage.set('passwords', updatedPasswords)
     win.webContents.send('passwordUpdate')
 }
+
+function generatePassword(length = 10, numbers = false, symbols = false) {
+    var password = generator.generate({
+        length: length,
+        numbers: numbers,
+        symbols: symbols
+    })
+    console.log(password)
+    child.webContents.send('insertPassword', password)
+}
+
 //=====================================================================
 // Getting and Sending user data to server
 //=====================================================================

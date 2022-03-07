@@ -1,40 +1,55 @@
 const cancelButton = document.getElementById('cancel')
 cancelButton.addEventListener('click', () => window.close())
 
-const saveButton = document.getElementById('save')
-saveButton.addEventListener('click', () => save())
+var accountData = {}
 
-window.electronAPI.accessPasswords()
-var accountData = JSON.parse(window.localStorage.getItem('passwords'))
+getPasswords()
 
 var accountId = window.localStorage.getItem('accountId')
-console.log(accountId)
-if (accountId !== null) {
+
+if (accountId !== null && accountId != 'undefined') {
     updatePasswordView(accountId)
+}
+
+function getPasswords() {
+    window.localStorage.removeItem('passwords')
+    window.electronAPI.accessPasswords()
+
+    const passwords = window.localStorage.getItem('passwords')
+    if (passwords !== null) accountData = JSON.parse(passwords)
+    
+    window.localStorage.removeItem('passwords')
+    console.log('here' + accountData)
 }
 
 function save() {
     const title = document.getElementById('title').value
     const username = document.getElementById('username').value
-    const password = document.getElementById('password').value
+    const password = document.getElementById('editorPassword').value
     const url = document.getElementById('url').value
     const notes = document.getElementById('notes').value
-
-    if (title !== accountId) {
-        delete accountData[accountId]
-        accountId = title
+    console.log(title)
+    console.log(url)
+    if (! title) {
+        window.alert("Title required")
+    } else {
+        if (title != accountId) {
+            delete accountData[accountId]
+            accountId = title
+        }
+        accountData[accountId] = {
+            'username': username,
+            'password': password,
+            'url': url,
+            'notes': notes
+        }
+        console.log(accountData)
+        // console.log(JSON.stringify(accountData))
+        window.electronAPI.updatePasswords(JSON.stringify(accountData))
     }
-    accountData[accountId] = {
-        'username': username,
-        'password': password,
-        'url': url,
-        'notes': notes
-    }
-    console.log(JSON.stringify(accountData))
-    window.localStorage.setItem('passwords', JSON.stringify(accountData))
-    window.electronAPI.updatePasswords()
     
-    console.log(window.localStorage.getItem('passwords'))
+    // console.log(window.localStorage.getItem('passwords'))
+    // window.close()
 }
 
 function updatePasswordView(accountName) {
@@ -45,17 +60,37 @@ function updatePasswordView(accountName) {
     const notes = accountData[accountName]['notes']
 
     const accountTitle = document.getElementById('title')
-    accountTitle.setAttribute('value', accountName)
+    accountTitle.value = accountName
 
     const usernameBox = document.getElementById('username')
-    usernameBox.setAttribute('value', username)
+    usernameBox.value = username
 
-    const passwordBox = document.getElementById('password')
-    passwordBox.setAttribute('value', password)
+    const passwordBox = document.getElementById('editorPassword')
+    passwordBox.value = password
 
     const urlBox = document.getElementById('url')
-    urlBox.setAttribute('value', url)
+    urlBox.value = url
 
     const notesBox = document.getElementById('notes')
     notesBox.innerHTML = notes
 }
+
+function generateNewPassword() {
+    const length = document.getElementById('length').value
+    const numbers = document.getElementById('numbers').checked
+    const symbols = document.getElementById('symbols').checked
+    console.log(length)
+    console.log(numbers)
+    console.log(symbols)
+
+    window.electronAPI.generatePassword(length, numbers, symbols)
+}
+
+const saveButton = document.getElementById('save')
+saveButton.addEventListener('click', save, true)
+
+const passwordButton = document.getElementById('password-button')
+passwordButton.addEventListener('click', (event) => {
+    event.preventDefault()
+    generateNewPassword()
+})

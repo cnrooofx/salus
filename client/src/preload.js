@@ -6,19 +6,24 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.invoke('authenticate', email, password)
     },
     openEditor: (accountId) => {
-        ipcRenderer.invoke('openEditor', accountId)
+        ipcRenderer.send('openEditor', accountId)
     },
-    accessPasswords: () => {
+    accessPasswords: async () => {
         ipcRenderer.send('accessPasswords')
     },
-    updatePasswords: () => {
-        const updatedPasswords = window.localStorage.getItem('passwords')
+    updatePasswords: (updatedPasswords) => {
         ipcRenderer.send('updatePasswords', updatedPasswords)
+        ipcRenderer.once('passwordUpdate', () => {
+            window.close()
+        })
+    },
+    generatePassword: (length, numbers, symbols) => {
+        ipcRenderer.send('generatePassword', length, numbers, symbols)
     }
 })
 
 ipcRenderer.on('accountId', (event, accountId) => {
-    if (accountId !== 'undefined') {
+    if (accountId !== null && typeof accountId !== 'undefined') {
         window.localStorage.setItem('accountId', accountId)
     }
 })
@@ -28,6 +33,15 @@ ipcRenderer.on('passwordData', (event, passwords) => {
     window.localStorage.setItem('passwords', passwords)
 })
 
-ipcRenderer.on('passwordUpdate', () => {
-    window.location.reload()
+ipcRenderer.on('passwordUpdate', (event) => {
+    console.log('reloading' + event)
+    // window.location.reload()
+})
+
+ipcRenderer.on('insertPassword', (event, password) => {
+    console.log(password)
+    const passwordField = document.getElementById('editorPassword')
+    if (passwordField != null) {
+        passwordField.value = password
+    }
 })
