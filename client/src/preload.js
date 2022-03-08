@@ -2,8 +2,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
     setWelcomeEmail: (email) => ipcRenderer.on('setWelcomeEmail', email),
-    authenticateUser: (email, password) => {
-        ipcRenderer.invoke('authenticate', email, password)
+    login: (email, password) => {
+        ipcRenderer.invoke('login', email, password)
     },
     openEditor: (accountId) => {
         ipcRenderer.send('openEditor', accountId)
@@ -17,7 +17,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
    storeId: (id) => {
         ipcRenderer.send('storeID', id)
-    }
+    },
     redirectMain: () => ipcRenderer.send('redirectMain')
 })
 

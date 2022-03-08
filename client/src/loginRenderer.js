@@ -1,9 +1,7 @@
-const button = document.getElementById('login-button')
+const form = document.getElementById('login-form')
 
-button.addEventListener('click', async () => {
-    const email = document.getElementById("email").value()
-    const email = document.getElementById("password").value()
-    console.log(email)
-    await window.electronAPI.authenticateUser(email, password)
-    window.electronAPI.StoreID(id)
+form.addEventListener('submit', () => {
+    const email = document.getElementById("email").value
+    const password = document.getElementById("password").value
+    window.electronAPI.login(email, password)
 })
