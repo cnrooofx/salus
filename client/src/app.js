@@ -17,6 +17,9 @@ var iCounter = 0
 // }})
 let win
 let child
+ipcMain.on('storeID') = (event,id) =>{
+    storage.set('usr_data', id)
+}
 
 const createWindow = () => {
     win = new BrowserWindow({
@@ -96,49 +99,85 @@ async function authenticateUser(event, email, password) {
 }
 
 //=====================================================================
-//User Authentication
+//User Authentication + Login
 //=====================================================================
+//post to server
+async function post_to_server(path,info) {
+    return new Promise(async (resolve, reject) =>{
+        const toSend = info
+        var options = {
+            hostname: 'www.salussecurity.live',
+            port: 5443,
+            path: path,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/JSON',
+                'Content-Length': toSend.length
+            }
+
+        }
+        const callback = function (response) {
+            var str = "";
+            response.on('data', function (chunk) {
+                str += chunk;
+            });
+            response.on('end', function () {
+                if (str != "false") {
+                    console.log("Success")
+                    resolve(str)
+                }
+                else {
+                    console.log("Error In Uploading Data " + str)
+                    reject("error")
+                }
+            })
+        }
+        var req = https.request(options, callback);
+        req.write(toSend);
+        req.end();
+    })
+}
+
+
+function signUP(email,pass) {
+    salt = crypto.randomBytes(16).toString('hex');
+    hash = crypto.pbkdf2Sync(pass, this.salt, 1000, 64, `sha512`).toString(`hex`);
+    const iv = crypto.randomBytes(16);
+    const data = JSON.stringify({
+        "email": email,
+        "salt": salt,
+        "pass": hash,
+        "iv": iv
+    })
+   post_to_server('/signup', data)
+  .then((data) => {
+    if (data == "true"){
+        console.log('yes');
+        //redirect
+        }
+    else{
+        console.log('no');
+        console.log(data);
+        }
+  }, (reason)=>{console.log(reason)});
+  }
 /*
 Checks for users email in database and returns salt value. (If email exists)
 Passes email, password and salt to check credentials to validate password.
 */
-function getSalt(email, password) {
-    const toSend = JSON.stringify({
-        "email": email,
-    })
-
-    var options = {
-        host: 'www.salussecurity.live',
-        port: 5443,
-        path: '/salt',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/JSON',
-            'Content-Length': toSend.length
-        }
-    };
-
-    callback = function (response) {
-        var str = "";
-        response.on('data', function (chunk) {
-            str += chunk;
-        });
-        response.on('end', function () {
-            if (str != "false") {
-                console.log('Salt Obtained: ' + str)
-                checkCredentials(str, email, password)
-                return true
-            }
-            else {
-                console.log(str + '\nSalt not Obtained')
-                storage.set('logged-in',false);
-            }
-        })
+function logIn(email,pass) {
+    post_to_server('/salt', JSON.stringify({"email":email}))
+    .then((data) => {
+      if (data != "false"){
+        console.log('woo');
+        console.log(data);
+        verify(email,pass,data);
+      }
+      else{
+      }
+    }, (reason)=>{console.log(reason)}) ;
     }
-    var req = https.request(options, callback);
-    req.write(toSend);
-    req.end();
-}
+
 
 /*
 Method takes in user salt, email and password.
@@ -146,6 +185,21 @@ Generates hashed password and sends off to server along with email.
 If match what's in database, set login status to true
 else returns false.
 */
+
+async function verify(email,pass,salt){
+  hash = crypto.pbkdf2Sync(pass, salt, 1000, 64, `sha512`).toString(`hex`);
+  post_to_server('/login', JSON.stringify({"email":email,"pass":hash}))
+.then((data) => {
+  if (data != "false"){
+        console.log("WAHOO")
+        //redirect
+  }
+  else{
+    console.log(data + "bedjkbdjb")
+  }
+},(reason)=>{console.log(reason)});
+}
+
 function checkCredentials(salt, email, password) {
     hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
     console.log("Hashed Password: " + hash);

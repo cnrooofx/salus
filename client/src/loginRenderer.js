@@ -1,8 +1,9 @@
 const button = document.getElementById('login-button')
 
 button.addEventListener('click', async () => {
-    const email = 'conorbradley49@gmail.com'
-    const password = '1234'
+    const email = document.getElementById("email").value()
+    const email = document.getElementById("password").value()
     console.log(email)
-    const isAuth = await window.electronAPI.authenticateUser(email, password)
+    await window.electronAPI.authenticateUser(email, password)
+    window.electronAPI.StoreID(id)
 })

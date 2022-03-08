@@ -1,18 +1,36 @@
 var crypto = require('crypto');
-const https = require('https')
+const https = require('https');
+
+const button = document.getElementById('signup-button')
+
+button.addEventListener('click', async () => {
+    const email = document.getElementById("email").value
+    const email = document.getElementById("password").value
+    await window.electronAPI.authenticateUser(email, password)
+    window.electronAPI.StoreID(id)
+})
+
+
+//const button = document.getElementById('signup-button')
+//button.addEventListener('click', async () => {
+//    const email = document.getElementById("email").value
+//    const email = document.getElementById("password").value
+//    console.log(email)
+//    const isAuth = await window.electronAPI.set_credentials(email, password);
+//})
+
 /*
 Must add email and password checks, (well formed, password reqs etc...)
 */
-function set_credentials(email, password) {
+async function set_credentials(email, password) {
     /*
     Assumes good email and password
     If successfully added to database, returns true
     Else returns False.
     */
 
-    this.email = email
-    this.salt = crypto.randomBytes(16).toString('hex');
-    this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
+    salt = crypto.randomBytes(16).toString('hex');
+    hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, `sha512`).toString(`hex`);
     const iv = crypto.randomBytes(16);
     const data = JSON.stringify({
         "email": email,
@@ -20,11 +38,11 @@ function set_credentials(email, password) {
         "pass": hash,
         "iv": iv
     })
-    post_to_server(data)
+    return data;
 }
 
 
-function post_to_server(info) {
+async function post_to_server(info) {
     const toSend = info
     var options = {
         hostname: 'www.salussecurity.live',
@@ -38,7 +56,7 @@ function post_to_server(info) {
 
     }
 
-    callback = function (response) {
+    const callback = function (response) {
         var str = "";
         response.on('data', function (chunk) {
             str += chunk;
@@ -46,18 +64,19 @@ function post_to_server(info) {
         response.on('end', function () {
             if (str == "true") {
                 console.log("User Data Uploaded")
-                return true;
+                console.log(str)
+                signUpStatus = true
+
             }
             else {
                 console.log("Error In Uploading Data\n" + str)
-                return false;
+                signUpStatus = false;
             }
         })
     }
     var req = https.request(options, callback);
     req.write(toSend);
-    req.end();
 }
 
-
+console.log(set_credentials('email','password'))
 
