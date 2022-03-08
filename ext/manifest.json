@@ -11,5 +11,5 @@
         "service_worker": "background.js"
       },
       "permissions": ["storage", "activeTab", "scripting"],
-    "action": {}
+    "action": {"default_popup": "popup.html"}
   }

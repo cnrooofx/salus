@@ -1,124 +1,25 @@
-var accountData = {
-    "account1": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account2": {
-        "user": "test2@gmail.com",
-        "pass": "password"
-    },
-    "account3": {
-        "user": "test3@gmail.com",
-        "pass": "longest password"
-    },
-    "Salus": {
-        "user": "admin@salussecurity.live",
-        "pass": "123456789"
-    },
-    "Google": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Facebook": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Instagram": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Twitter": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Reddit": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "GitHub": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "UCC": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "Digital Ocean": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account4": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account5": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account6": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account7": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account8": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account9": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account10": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account11": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account12": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account13": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account14": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account15": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account16": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account17": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account18": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account19": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    },
-    "account20": {
-        "user": "test@gmail.com",
-        "pass": "short"
-    }
-}
-// var accountData = {}
+var accountData;
+var isPaused = true
 
-const sidebar = document.getElementById('sidebar')
+function getData(key) {
+    isPaused = true;
+    chrome.storage.sync.get(key, function(items) {
+        console.log('hello')
+      return items;
+    
+    });
+    isPaused = false;
+}
+function main(){
+    accountData = getData('pass');
+
+    console.log("Here");
+
+    function waitForIt(){
+        if (isPaused) {
+            setTimeout(function(){waitForIt()},100);
+        } else {
+            const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 var selectedAccountId = null
 
@@ -126,7 +27,6 @@ var selectedAccountId = null
 // newItemButton.addEventListener('click', () => {
 //     window.electronAPI.openEditor()
 // })
-
 
 if (Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
@@ -184,6 +84,8 @@ function updatePasswordView(accountName) {
     // Update the username, password fields to the specified account info
     const username = accountData[accountName]['user']
     const password = accountData[accountName]['pass']
+    const url = accountData[accountName]['url']
+    const notes = accountData[accountName]['notes']
 
     const accountTitle = document.getElementById('accountTitle')
     accountTitle.innerHTML = accountName
@@ -193,6 +95,12 @@ function updatePasswordView(accountName) {
 
     const passwordBox = document.getElementById('passwordBox')
     passwordBox.setAttribute('value', password)
+
+    const urlBox = document.getElementById('urlBox')
+    urlBox.value = url
+
+    const notesBox = document.getElementById('notesBox')
+    notesBox.innerHTML = notes
 }
 
 function initialisePasswordView() {
@@ -265,6 +173,7 @@ function initialisePasswordView() {
 
     const notes = document.createElement('textarea')
     notes.setAttribute('name', 'notes')
+    notes.setAttribute('id','notesBox')
     notes.setAttribute('readonly', 'true')
     passwordSection.appendChild(notes)
 
@@ -278,3 +187,12 @@ function initialisePasswordView() {
     passwordFooter.appendChild(editButton)
     passwordSection.appendChild(passwordFooter)
 }
+        };
+    }
+};
+
+// var accountData = {}
+
+
+
+main();

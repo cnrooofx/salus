@@ -1,20 +1,22 @@
+<!-- 500 x 300 min -->
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="stylesheet" href="media/popup.css">
-  </head>
-  <body>
-    <main>
-      <h1>Login</h1>
-      <form id="login-form">
-        <label for="email">Email: </label>
-        <input type="email" name="email" id="email" />
-        <label for="password">Password: </label>
-        <input type="password" name="password" id="password"/>
-        <input type="submit" id="loginBut" value="Login" />
-      </form>
-    </main>
-    <script src="scripts/popup.js"></script>
-    <script src="background.js"></script>
-  </body>
+<html lang="en-ie">
+    <head>
+        <title>Salus</title>
+        <meta charset="utf-8" />
+
+        <link rel="stylesheet" href="media/main.css">
+    </head>
+    <body>
+        <nav id="navbar">
+            <input type="search" placeholder="Search" autofocus />
+            <ul id="sidebar">
+            </ul>
+        </nav>
+        <main>
+            <section id="passwordView">
+            </section>
+        </main>
+        <script type="module" src="main.js"></script>
+    </body>
 </html>
