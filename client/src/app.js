@@ -244,7 +244,7 @@ function getData() {
 	};
 	
 	callback = function (response) {
-		console.log("djhge")
+		//console.log("djhge")
 		var str = "";
 		response.on('data', function (chunk) {
 			str += chunk;
@@ -269,7 +269,7 @@ Method takes in user id.
 If match what's in database, updates user's data.
 */
 function sendData() {
-	const data = JSON.parse(storage.get('user_data'));
+	const data = JSON.parse(storage.get('usr_data'));
 	const toSend = JSON.stringify({
 		"id": data['_id'],
 		"pass": encrypt(storage.get('passwords'),generate_key(data['password'],data['salt']),data['iv'])
@@ -317,9 +317,9 @@ function generate_key(password,salt){
 //Encrypts and returns a message
 //Generates key and gets iv from user_data in electron storage
 function encrypt(msg){
-	const data = JSON.parse(storage.get('user_data'));
+	const data = JSON.parse(storage.get('usr_data'));
 	const iv = data['iv'];
-	const key = generate_key();
+	const key = generate_key(data['password'],data['salt']);
 	const algorithm = 'aes-192-cbc';
 	const cipher = crypto.createCipheriv(algorithm,key,iv);
 	cipher.write(msg);
@@ -333,7 +333,7 @@ function encrypt(msg){
 //Decrypts and returns encrypted message
 //Generates key and gets iv from user_data in electron storage
 function decrypt(encrypted_msg){
-	const data = JSON.parse(storage.get('user_data'));
+	const data = JSON.parse(storage.get('usr_data'));
 	const iv = data['iv'];
 	const key = generate_key();
 	const algorithm = 'aes-192-cbc';
