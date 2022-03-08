@@ -17,9 +17,6 @@ var iCounter = 0
 // }})
 let win
 let child
-ipcMain.on('storeID') = (event,id) =>{
-    storage.set('usr_data', id)
-}
 
 const createWindow = () => {
     win = new BrowserWindow({
@@ -79,6 +76,9 @@ app.whenReady().then(() => {
     })
     ipcMain.handle('updatePasswords', () => {
         return Promise.resolve(storage.set('passwords', updatedPasswords))
+    })
+    ipcMain.on('storeID', (event, id) => {
+        storage.set('usr_data', id)
     })
     createWindow()
 })
