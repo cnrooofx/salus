@@ -6,14 +6,7 @@ const crypto = require('crypto')
 var generator = require('generate-password')
 
 const storage = new Store()
-var iCounter = 0
 
-// storage.set('passwords', {'account1': {
-//     'username': 'username',
-//     'password': 'password',
-//     'url': 'url',
-//     'notes': 'notes'
-// }})
 let win
 let child
 
@@ -29,15 +22,8 @@ const createWindow = () => {
 		titleBarStyle: 'hiddenInset',
 		show: false
 	})
-	// win.webContents.openDevTools()
-	
-	// win.loadFile(path.join(__dirname, 'main.html'))
-	if (storage.get('logged-in')) { 
+	if (storage.get('logged-in')) {
 		win.loadFile(path.join(__dirname, 'unlock.html'))
-		win.webContents.on('did-finish-load', () => {
-			let userEmail = storage.get('userEmail')
-			win.webContents.send("setWelcomeEmail", userEmail)
-		})
 	} else {
 		win.loadFile(path.join(__dirname, 'login.html')) 
 	}
@@ -87,6 +73,9 @@ app.whenReady().then(() => {
 	ipcMain.handle('signup', (event, email, password) => {
 		console.log('THERE')
 		signup(email, password)
+	})
+	ipcMain.handle('getUserData', () => {
+		return Promise.resolve(storage.get('usr_data'))
 	})
 	createWindow()
 })

@@ -1,11 +1,23 @@
-const button = document.getElementById('login-button')
+const form = document.getElementById('unlock-form')
+var userEmail
 
-button.addEventListener('click', async () => {
-    const email = 'conorbradley49@gmail.com'
-    const password = '1234'
-    console.log(email)
-    const isAuth = await window.electronAPI.authenticateUser(email, password)
+form.addEventListener('submit', () => {
+    const password = document.getElementById('password').value
+    window.electronAPI.login(userEmail, password)
 })
-window.electronAPI.setWelcomeEmail((event, email) => {
-    document.querySelector('#email').setAttribute('value', email)
+
+accessUserData().then((email) => {
+    userEmail = email
 })
+
+async function accessUserData() {
+    const userData = await window.electronAPI.getUserData()
+    return new Promise((resolve, reject) => {
+        if (userData) {
+            const userDataJSON = JSON.parse(userData)
+            resolve(userDataJSON['email'])
+        } else {
+            reject('No accounts')
+        }
+    })
+}

@@ -35,7 +35,6 @@ async function getPasswords() {
             reject('No accounts')
         }
     })
-    
 }
 
 function showHidePassword() {
