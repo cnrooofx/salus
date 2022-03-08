@@ -8,14 +8,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     openEditor: (accountId) => {
         ipcRenderer.send('openEditor', accountId)
     },
-    accessPasswords: async () => {
-        ipcRenderer.send('accessPasswords')
-    },
+    accessPasswords: () => ipcRenderer.invoke('accessPasswords'),
     updatePasswords: (updatedPasswords) => {
-        ipcRenderer.send('updatePasswords', updatedPasswords)
-        ipcRenderer.once('passwordUpdate', () => {
-            window.close()
-        })
+        ipcRenderer.invoke('updatePasswords', updatedPasswords)
     },
     generatePassword: (length, numbers, symbols) => {
         ipcRenderer.send('generatePassword', length, numbers, symbols)
@@ -32,14 +27,8 @@ ipcRenderer.on('accountId', (event, accountId) => {
     }
 })
 
-ipcRenderer.on('passwordData', (event, passwords) => {
-    // console.log(passwords)
-    window.localStorage.setItem('passwords', passwords)
-})
-
 ipcRenderer.on('passwordUpdate', (event) => {
-    console.log('reloading' + event)
-    // window.location.reload()
+    window.location.reload()
 })
 
 ipcRenderer.on('insertPassword', (event, password) => {

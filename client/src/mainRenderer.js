@@ -11,20 +11,20 @@ var sidebarSelection = null
 var selectedAccountId = null
 var accountData
 
-getPasswords()
-if (accountData === null || Object.keys(accountData).length === 0) {
-    createListElement('empty', 'No Accounts Yet')
-} else {
-    initialisePasswordView()
-    populateSidebar()
+getPasswords().then(init)
+
+function init() {
+    if (accountData === null || Object.keys(accountData).length === 0) {
+        createListElement('empty', 'No Accounts Yet')
+    } else {
+        initialisePasswordView()
+        populateSidebar()
+    }
 }
 
-function getPasswords() {
-    window.localStorage.removeItem('passwords')
-    window.electronAPI.accessPasswords()
-    accountData = JSON.parse(window.localStorage.getItem('passwords'))
-    window.localStorage.removeItem('passwords')
-    console.log(accountData)
+async function getPasswords() {
+    const passwords = await window.electronAPI.accessPasswords()
+    accountData = JSON.parse(passwords)
 }
 
 function showHidePassword() {
@@ -48,7 +48,6 @@ function populateSidebar(searchTerm=null) {
     while (sidebar.lastChild) {
         sidebar.removeChild(sidebar.lastChild)
     }
-
     if (searchTerm != null) {
         const pattern = new RegExp(searchTerm, 'i')
         const accountNames = Object.keys(accountData)

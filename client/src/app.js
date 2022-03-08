@@ -74,8 +74,12 @@ app.whenReady().then(() => {
     ipcMain.on('generatePassword', (event, length, numbers, symbols) => {
         generatePassword(length, numbers, symbols)
     })
-    ipcMain.on('accessPasswords', accessPasswords)
-    // ipcMain.on('updatePasswords', updatePasswords)
+    ipcMain.handle('accessPasswords', () => {
+        return Promise.resolve(storage.get('passwords'))
+    })
+    ipcMain.handle('updatePasswords', () => {
+        return Promise.resolve(storage.set('passwords', updatedPasswords))
+    })
     createWindow()
 })
 
@@ -239,22 +243,6 @@ function checkCredentials(salt, email, password) {
     var req = https.request(options, callback);
     req.write(toSend);
     req.end();
-}
-
-function accessPasswords() {
-    if (storage.has('passwords')) {
-        const passwords = storage.get('passwords')
-        win.webContents.send('passwordData', JSON.stringify(passwords))
-        if (child) {
-            child.webContents.send('passwordData', JSON.stringify(passwords))
-        }
-    }
-}
-
-function updatePasswords(event, updatedPasswords) {
-    // console.log(updatedPasswords)
-    storage.set('passwords', updatedPasswords)
-    win.webContents.send('passwordUpdate')
 }
 
 function generatePassword(length = 10, numbers = false, symbols = false) {
