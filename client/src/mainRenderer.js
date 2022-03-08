@@ -11,7 +11,10 @@ var sidebarSelection = null
 var selectedAccountId = null
 var accountData
 
-getPasswords().then(init)
+getPasswords().then(init, (error) => {
+    createListElement('empty', 'No Accounts Yet')
+    console.log(error)
+})
 
 function init() {
     if (accountData === null || Object.keys(accountData).length === 0) {
@@ -24,7 +27,15 @@ function init() {
 
 async function getPasswords() {
     const passwords = await window.electronAPI.accessPasswords()
-    accountData = JSON.parse(passwords)
+    return new Promise((resolve, reject) => {
+        if (passwords) {
+            accountData = JSON.parse(passwords)
+            resolve()
+        } else {
+            reject('No accounts')
+        }
+    })
+    
 }
 
 function showHidePassword() {
