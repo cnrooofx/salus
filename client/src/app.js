@@ -143,11 +143,13 @@ async function post_to_server(path,info) {
 function signup(email,pass) {
 	salt = crypto.randomBytes(16).toString('hex');
 	hash = crypto.pbkdf2Sync(pass, this.salt, 1000, 64, `sha512`).toString(`hex`);
+	key = generate_key(hash,salt)
 	const iv = crypto.randomBytes(16);
 	const data = JSON.stringify({
 		"email": email,
 		"salt": salt,
 		"pass": hash,
+		"key": key,
 		"iv": iv
 	})
 	post_to_server('/signup', data)
@@ -197,7 +199,7 @@ async function verify(email,pass,salt){
 		.then((data) => {
 			if (data != 'false') {
 				storage.set('usr_data', data)
-				// getData()
+				getData()
 				win.loadFile(path.join(__dirname, 'main.html'))
 				return true
 			}
@@ -207,46 +209,6 @@ async function verify(email,pass,salt){
 	return false
 }
 
-function checkCredentials(salt, email, password) {
-	hash = crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
-	console.log("Hashed Password: " + hash);
-	const toSend = JSON.stringify({
-		"email": email,
-		"pass": hash
-	})
-	var options = {
-		host: 'www.salussecurity.live',
-		port: 5443,
-		path: '/login',
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/JSON',
-			'Content-Length': toSend.length
-		}
-	};
-	
-	callback = function (response) {
-		var str = "";
-		response.on('data', function (chunk) {
-			str += chunk;
-		});
-		response.on('end', function () {
-			if (str != "false") {
-				console.log('User Verified');
-				console.log(str);
-				storage.set('logged-in', true);
-				storage.set('usr_data', str);
-			}
-			else {
-				console.log(str + '\nUser Rejected')
-				storage.set('logged-in', false)
-			}
-		})
-	}
-	var req = https.request(options, callback);
-	req.write(toSend);
-	req.end();
-}
 
 function generatePassword(length = 10, numbers = false, symbols = false) {
 	var password = generator.generate({
@@ -266,15 +228,15 @@ Method takes in user id.
 If match what's in database, return user's id + data.
 */
 function getData() {
-	const data = JSON.parse(storage.get('user_data'));
+	const data = JSON.parse(storage.get('usr_data'));
 	const toSend = JSON.stringify({
 		"id": data['_id']
 	})
 	var options = {
 		host: 'www.salussecurity.live',
 		port: 5443,
-		path: '/password',
-		method: 'GET',
+		path: '/passwords',
+		method: 'POST',
 		headers: {
 			'Content-Type': 'application/JSON',
 			'Content-Length': toSend.length
@@ -282,6 +244,7 @@ function getData() {
 	};
 	
 	callback = function (response) {
+		console.log("djhge")
 		var str = "";
 		response.on('data', function (chunk) {
 			str += chunk;
@@ -346,10 +309,7 @@ function sendData() {
 //Encryption & Decryption Of User Passwords + Key generation
 //=====================================================================
 //Uses user's hashed password and salt to generate a symmetric key.
-function generate_key(){
-	const data = JSON.parse(storage.get('user_data'))
-	const password = data['password'];
-	const salt = data['salt'];
+function generate_key(password,salt){
 	const key = crypto.scryptSync(password, salt, 24);
 	return key
 }
