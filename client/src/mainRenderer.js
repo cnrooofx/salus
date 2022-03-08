@@ -113,26 +113,51 @@ function changeSidebarSelection(accountName) {
 }
 
 function updatePasswordView(accountName) {
-    // Update the username, password fields to the specified account info
-    const username = accountData[accountName]['username']
-    const password = accountData[accountName]['password']
-    const url = accountData[accountName]['url']
-    const notes = accountData[accountName]['notes']
+    let username
+    let password
+    let url
+    let notes
 
+    if ('username' in accountData[accountName]) {
+        username = accountData[accountName]['username']
+    }
+    if ('password' in accountData[accountName]) {
+        password = accountData[accountName]['password']
+    }
+    if ('url' in accountData[accountName]) {
+
+        url = accountData[accountName]['url']
+    }
+    if ('notes' in accountData[accountName]) {
+        notes = accountData[accountName]['notes']
+    }
     const accountTitle = document.getElementById('title')
-    accountTitle.innerHTML = accountName
+    accountTitle.value = accountName
 
     const usernameBox = document.getElementById('username')
-    usernameBox.setAttribute('value', username)
-
+    if (username) {
+        usernameBox.value = username
+    } else {
+        usernameBox.value = ''
+    }
     const passwordBox = document.getElementById('password')
-    passwordBox.setAttribute('value', password)
-
+    if (password) {
+        passwordBox.value = password
+    } else {
+        passwordBox.value = ''
+    }
     const urlBox = document.getElementById('url')
-    urlBox.setAttribute('value', url)
-
+    if (url) {
+        urlBox.value = url
+    } else {
+        urlBox.value = ''
+    }
     const notesBox = document.getElementById('notes')
-    notesBox.innerHTML = notes
+    if (notes) {
+        notesBox.innerHTML = notes
+    } else {
+        notesBox.innerHTML = ''
+    }
 }
 
 function initialisePasswordView() {
