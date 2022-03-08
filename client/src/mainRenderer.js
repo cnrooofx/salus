@@ -2,6 +2,10 @@ const newItemButton = document.getElementById('newButton')
 newItemButton.addEventListener('click', () => {
     window.electronAPI.openEditor()
 })
+const searchBar = document.getElementById('search')
+searchBar.addEventListener('change', () => {
+    populateSidebar(searchBar.value)
+})
 const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 var selectedAccountId = null
@@ -12,20 +16,7 @@ if (accountData === null || Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
     initialisePasswordView()
-
-    for (var account in accountData) {
-        console.log(account)
-        const listElement = createListElement(account, account)
-        listElement.addEventListener('click', (event) => {
-            const accountId = event['target']['id']
-            changeSidebarSelection(accountId)
-        })
-        if (sidebarSelection === null) {
-            changeSidebarSelection(account)
-            sidebarSelection = listElement
-            selectedAccountId = account
-        }
-    }
+    populateSidebar()
 }
 
 function getPasswords() {
@@ -46,6 +37,47 @@ function showHidePassword() {
     } else {
         passwordBox.setAttribute('type', 'password')
         hideButton.innerHTML = 'Show Password'
+    }
+}
+
+function populateSidebar(searchTerm=null) {
+    var accountList = []
+    var index
+    var account
+
+    while (sidebar.lastChild) {
+        sidebar.removeChild(sidebar.lastChild)
+    }
+
+    if (searchTerm != null) {
+        const pattern = new RegExp(searchTerm, 'i')
+        const accountNames = Object.keys(accountData)
+        for (index in accountNames) {
+            account = accountNames[index]
+            console.log(pattern.test(account))
+            if (pattern.test(account)) {
+                console.log('here' + account)
+                accountList.push(account)
+            }
+        }
+    } else {
+        accountList = Object.keys(accountData)
+    }
+
+    console.log(accountList)
+    for (index in accountList) {
+        account = accountList[index]
+        console.log(account)
+        const listElement = createListElement(account, account)
+        listElement.addEventListener('click', (event) => {
+            const accountId = event['target']['id']
+            changeSidebarSelection(accountId)
+        })
+        if (sidebarSelection === null) {
+            changeSidebarSelection(account)
+            sidebarSelection = listElement
+            selectedAccountId = account
+        }
     }
 }
 
