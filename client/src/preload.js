@@ -5,6 +5,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     login: (email, password) => {
         ipcRenderer.invoke('login', email, password)
     },
+    signup: (email, password) => {
+        ipcRenderer.invoke('signup', email, password)
+    },
     openEditor: (accountId) => {
         ipcRenderer.send('openEditor', accountId)
     },

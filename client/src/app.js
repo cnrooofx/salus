@@ -84,6 +84,10 @@ app.whenReady().then(() => {
 		console.log('HERE')
 		login(email, password)
 	})
+	ipcMain.handle('signup', (event, email, password) => {
+		console.log('THERE')
+		signup(email, password)
+	})
 	createWindow()
 })
 
@@ -97,7 +101,7 @@ app.on('window-all-closed', () => {
 })
 
 async function authenticateUser(event, email, password) {
-	getSalt(email, password)
+	login(email, password)
 	if (storage.get('logged-in') == false){
 		console.log("login error")
 		return false
@@ -147,7 +151,7 @@ async function post_to_server(path,info) {
 }
 
 
-function signUP(email,pass) {
+function signup(email,pass) {
 	salt = crypto.randomBytes(16).toString('hex');
 	hash = crypto.pbkdf2Sync(pass, this.salt, 1000, 64, `sha512`).toString(`hex`);
 	const iv = crypto.randomBytes(16);
@@ -161,7 +165,7 @@ function signUP(email,pass) {
 	.then((data) => {
 		if (data == "true"){
 			console.log('yes');
-			//redirect
+			win.loadFile(path.join(__dirname, 'login.html'))
 		}
 		else{
 			console.log('no');
