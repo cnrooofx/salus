@@ -62,11 +62,11 @@ function updatePasswordView(accountName) {
     let url
     let notes
 
-    if ('username' in accountData[accountName]) {
-        username = accountData[accountName]['username']
+    if ('user' in accountData[accountName]) {
+        username = accountData[accountName]['user']
     }
-    if ('password' in accountData[accountName]) {
-        password = accountData[accountName]['password']
+    if ('pass' in accountData[accountName]) {
+        password = accountData[accountName]['pass']
     }
     if ('url' in accountData[accountName]) {
         

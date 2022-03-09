@@ -64,7 +64,13 @@ app.whenReady().then(() => {
 	})
 	ipcMain.on('updatePasswords', (updatedPasswords) => {
 		console.log('before')
-		storage.set('passwords', updatedPasswords)
+		acc = {"google":{
+			"username":"example@gmail.com",
+			"password":"1234",
+			"url":'google.com',
+			"notes":"my gmail account"
+		}}
+		storage.set('passwords', JSON.stringify(acc))
 		// sendData()
 		child.close()
 		win.reload()
