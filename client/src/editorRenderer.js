@@ -4,13 +4,15 @@ cancelButton.addEventListener('click', () => window.close())
 var accountData
 var accountId = window.localStorage.getItem('accountId')
 
+console.log('before')
 getPasswords().then(() => {
+    console.log(passwords)
+    
     if (accountId !== null && accountId != 'undefined') {
         updatePasswordView(accountId)
     }
 }, (error) => {
-    createListElement('empty', 'No Accounts Yet')
-    console.log(error)
+    console.log('error')
 })
 
 async function getPasswords() {
@@ -18,7 +20,7 @@ async function getPasswords() {
     return new Promise((resolve, reject) => {
         if (passwords) {
             accountData = JSON.parse(passwords)
-            resolve()
+            resolve(passwords)
         } else {
             reject('No accounts')
         }
@@ -37,11 +39,7 @@ function save() {
     if (! title) {
         window.alert("Title required")
     } else {
-        if (title != accountId) {
-            delete accountData[accountId]
-            accountId = title
-        }
-        accountData[accountId] = {
+        accountData[title] = {
             'username': username,
             'password': password,
             'url': url,
@@ -118,7 +116,10 @@ function generateNewPassword() {
 }
 
 const saveButton = document.getElementById('save')
-saveButton.addEventListener('click', save, true)
+saveButton.addEventListener('click', (event) => {
+    event.preventDefault()
+    save()
+})
 
 const passwordButton = document.getElementById('password-button')
 passwordButton.addEventListener('click', (event) => {

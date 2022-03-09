@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 })
 
 ipcRenderer.on('accountId', (event, accountId) => {
+    window.localStorage.clear('accountId')
     if (accountId !== null && typeof accountId !== 'undefined') {
         window.localStorage.setItem('accountId', accountId)
     }
