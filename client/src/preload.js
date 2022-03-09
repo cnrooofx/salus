@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     accessPasswords: () => ipcRenderer.invoke('accessPasswords'),
     getUserData: () => ipcRenderer.invoke('getUserData'),
     updatePasswords: (updatedPasswords) => {
-        ipcRenderer.invoke('updatePasswords', updatedPasswords)
+        ipcRenderer.send('updatePasswords', updatedPasswords)
     },
     generatePassword: (length, numbers, symbols) => {
         ipcRenderer.send('generatePassword', length, numbers, symbols)

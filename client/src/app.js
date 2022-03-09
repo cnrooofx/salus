@@ -7,6 +7,8 @@ var generator = require('generate-password')
 
 const storage = new Store()
 
+storage.set('passwords', {})
+
 let win
 let child
 
@@ -60,8 +62,12 @@ app.whenReady().then(() => {
 	ipcMain.handle('accessPasswords', () => {
 		return Promise.resolve(storage.get('passwords'))
 	})
-	ipcMain.handle('updatePasswords', () => {
-		return Promise.resolve(storage.set('passwords', updatedPasswords))
+	ipcMain.on('updatePasswords', (updatedPasswords) => {
+		console.log('before')
+		storage.set('passwords', updatedPasswords)
+		// sendData()
+		child.close()
+		win.reload()
 	})
 	ipcMain.on('storeID', (event, id) => {
 		storage.set('usr_data', id)
@@ -199,7 +205,7 @@ async function verify(email,pass,salt){
 		.then((data) => {
 			if (data != 'false') {
 				storage.set('usr_data', data)
-				getData()
+				// getData()
 				win.loadFile(path.join(__dirname, 'main.html'))
 				return true
 			}
@@ -208,7 +214,6 @@ async function verify(email,pass,salt){
 	
 	return false
 }
-
 
 function generatePassword(length = 10, numbers = false, symbols = false) {
 	var password = generator.generate({
@@ -310,8 +315,7 @@ function sendData() {
 //=====================================================================
 //Uses user's hashed password and salt to generate a symmetric key.
 function generate_key(password,salt){
-	const key = crypto.scryptSync(password, salt, 24);
-	return key
+	return crypto.scryptSync(password, salt, 24);
 }
 
 //Encrypts and returns a message
@@ -321,12 +325,11 @@ function encrypt(msg){
 	const iv = data['iv'];
 	const key = generate_key(data['password'],data['salt']);
 	const algorithm = 'aes-192-cbc';
-	const cipher = crypto.createCipheriv(algorithm,key,iv);
+	const cipher = crypto.createCipheriv(algorithm, key, iv);
 	cipher.write(msg);
 	cipher.end();
-	out="";
+	let out = '';
 	out += cipher.read().toString('hex');
-	//console.log(out);
 	return out;
 }
 
@@ -340,7 +343,7 @@ function decrypt(encrypted_msg){
 	const decipher = crypto.createDecipheriv(algorithm, key, iv)
 	decipher.write(encrypted_msg, 'hex')
 	decipher.end();
-	out = "";
+	let out = '';
 	out += decipher.read().toString('utf8');
 	return out;
 }

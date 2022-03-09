@@ -6,26 +6,27 @@ var accountId = window.localStorage.getItem('accountId')
 
 console.log('before')
 getPasswords().then(() => {
-    console.log(passwords)
+    console.log('then')
     
     if (accountId !== null && accountId != 'undefined') {
         updatePasswordView(accountId)
     }
 }, (error) => {
     console.log('error')
+    accountData = {}
 })
 
 async function getPasswords() {
     const passwords = await window.electronAPI.accessPasswords()
     return new Promise((resolve, reject) => {
         if (passwords) {
-            accountData = JSON.parse(passwords)
+            accountData = passwords
             resolve(passwords)
         } else {
+            accountData = {}
             reject('No accounts')
         }
     })
-
 }
 
 function save() {
@@ -34,7 +35,7 @@ function save() {
     const password = document.getElementById('editorPassword').value
     const url = document.getElementById('url').value
     const notes = document.getElementById('notes').value
-    console.log(title)
+    console.log('title ' + title)
     console.log(url)
     if (! title) {
         window.alert("Title required")
@@ -47,7 +48,7 @@ function save() {
         }
         console.log(accountData)
         // console.log(JSON.stringify(accountData))
-        window.electronAPI.updatePasswords(JSON.stringify(accountData))
+        window.electronAPI.updatePasswords(accountData)
     }
     
     // console.log(window.localStorage.getItem('passwords'))
