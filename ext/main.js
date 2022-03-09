@@ -10,16 +10,8 @@ function getData(key) {
     });
     isPaused = false;
 }
-function main(){
-    accountData = getData('pass');
-
-    console.log("Here");
-
-    function waitForIt(){
-        if (isPaused) {
-            setTimeout(function(){waitForIt()},100);
-        } else {
-            const sidebar = document.getElementById('sidebar')
+console.log('fnewjfweif wuif"')
+const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 var selectedAccountId = null
 
@@ -27,7 +19,15 @@ var selectedAccountId = null
 // newItemButton.addEventListener('click', () => {
 //     window.electronAPI.openEditor()
 // })
+accountData= {
+    "google":{
+        "username":"test",
+        "pass":"wfwfwfw",
+        "url":'fnienfiwf',
+        "notes":"f ef ou fu 3uf"
 
+    }
+}
 if (Object.keys(accountData).length === 0) {
     createListElement('empty', 'No Accounts Yet')
 } else {
@@ -187,12 +187,8 @@ function initialisePasswordView() {
     passwordFooter.appendChild(editButton)
     passwordSection.appendChild(passwordFooter)
 }
-        };
-    }
-};
+
 
 // var accountData = {}
 
 
-
-main();

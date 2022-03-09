@@ -35,7 +35,7 @@ async function postData(url = '', data = {}) {
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
-postData('http://salussecurity.live:5000/passwords', { "id":20})
+postData('http://salussecurity.live:5000/passwords', { "id":54})
 .then(data => {
     console.log(data)
     local.set('pass',data);
