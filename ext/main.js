@@ -21,11 +21,10 @@ var selectedAccountId = null
 // })
 accountData= {
     "google":{
-        "username":"test",
-        "pass":"wfwfwfw",
-        "url":'fnienfiwf',
-        "notes":"f ef ou fu 3uf"
-
+        "user":"example",
+        "pass":"1234",
+        "url":'google.com',
+        "notes":"my gmail account"
     }
 }
 if (Object.keys(accountData).length === 0) {
