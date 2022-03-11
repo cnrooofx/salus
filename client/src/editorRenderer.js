@@ -29,6 +29,9 @@ function save() {
     if (! title) {
         window.alert("Title required")
     } else {
+        if (title != accountId) {
+            delete accountData[accountId]
+        }
         accountData[title] = {
             'username': username,
             'password': password,
