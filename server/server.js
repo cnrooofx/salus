@@ -41,7 +41,7 @@ app.post('/signup',(req,res) => {
               console.log("1 document updated");
     
 
-          const data = { _id : result.seq, email : req.body.email, password : req.body.pass, salt : req.body.salt}
+          const data = { _id  : result.seq, email : req.body.email, password : req.body.pass, salt : req.body.salt, key : req.body.key, iv: req.body.iv}
           const pdata = {_id: result.seq, pass:{}}
           dbo.collection("users").insertOne(data, function(err, res) {
             if (err) throw err;
@@ -62,12 +62,13 @@ app.post('/salt', (req, res) => {
    MongoClient.connect(url, function(err,db) {
      if (err) throw err;
       var dbo = db.db("users");
-	  console.log()
       dbo.collection("users").findOne({email:req.body.email}, function(err,result){
         if (result == null){
+	console.log('false');
           res.send('false')
       }
       else{
+	console.log('true');
         res.send(result.salt);
       }
       }
@@ -75,16 +76,18 @@ app.post('/salt', (req, res) => {
    })
 })
 
+
 app.post('/password', (req, res) => {
   MongoClient.connect(url, function(err,db) {
     if (err) throw err;
      var dbo = db.db("users");
+    console.log(req.body.id);
      dbo.collection("passwords").findOne({_id:req.body.id}, function(err,result){
       if (err) throw err;
-       result.pass = req.body.data;
-       console.log[result];
+       result.pass = req.body.pass;
+       console.log(result);
        var myq = { _id:req.body.id};
-      var newvalues = {result};
+      var newvalues = result;
        dbo.collection("passwords").replaceOne(myq, newvalues, function(err, res) {
         if (err) throw err;
         console.log("1 document updated");
@@ -93,18 +96,37 @@ app.post('/password', (req, res) => {
 })
 })
 
+app.post('/passwords', (req, res) => {
+  MongoClient.connect(url, function(err,db) {
+    if (err) throw err;
+     var dbo = db.db("users");
+     dbo.collection("passwords").findOne({_id:req.body.id}, function(err,result){
+      if (err) throw err;
+	console.log(result);
+       res.send(result);
+    })
+  })
+})
+
+
 app.post('/login', (req, res) => {
   MongoClient.connect(url, function(err,db) {
     if (err) throw err;
      var dbo = db.db("users");
      dbo.collection("users").findOne({email:req.body.email}, function(err,result){
        console.log(result)
-       if (req.body.pass == result.password){
-         res.send('true')
+	if (result == null){
+	console.log("false");
+	res.send(false);
+}
+       else if (req.body.pass == result.password){
+	console.log("true");
+         res.send(result);
      }
-     else{
-       res.send(false);
-     }
+	else{
+		console.log("false");
+		res.send(false);
+	}
     })
   })
 })
