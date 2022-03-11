@@ -1,0 +1,19 @@
+{
+    "name": "Salus",
+    "description": "Salus Security Password Manager",
+    "version": "1.0",
+    "manifest_version": 3,
+    "options_page": "options.html",
+    "host_permissions": [
+      "http://salussecurity.live:5000/*",
+      "*://*/*",
+      "http://127.0.0.1:8000/"
+  ],
+    "background": {
+        "service_worker": "background.js"
+      },
+      "permissions": ["storage", "activeTab", "scripting","cookies"],
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
