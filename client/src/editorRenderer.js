@@ -93,10 +93,6 @@ function generateNewPassword() {
     const length = document.getElementById('length').value
     const numbers = document.getElementById('numbers').checked
     const symbols = document.getElementById('symbols').checked
-    console.log(length)
-    console.log(numbers)
-    console.log(symbols)
-
     window.electronAPI.generatePassword(length, numbers, symbols)
 }
 

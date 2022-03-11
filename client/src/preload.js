@@ -19,10 +19,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     generatePassword: (length, numbers, symbols) => {
         ipcRenderer.send('generatePassword', length, numbers, symbols)
     },
-   storeId: (id) => {
+    storeId: (id) => {
         ipcRenderer.send('storeID', id)
     },
-    redirectMain: () => ipcRenderer.send('redirectMain')
+    redirectMain: () => ipcRenderer.send('redirectMain'),
+    copyToClipboard: (data) => ipcRenderer.send('copyToClipboard', data)
 })
 
 ipcRenderer.on('accountId', (event, accountId) => {

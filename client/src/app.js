@@ -1,9 +1,9 @@
 const path = require('path')
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, clipboard } = require('electron')
 const Store = require('electron-store')
 const https = require('https')
 const crypto = require('crypto')
-var generator = require('generate-password')
+const generator = require('generate-password')
 
 const storage = new Store()
 
@@ -92,6 +92,7 @@ app.whenReady().then(() => {
 	ipcMain.handle('getUserData', () => {
 		return Promise.resolve(storage.get('usr_data'))
 	})
+	ipcMain.on('copyToClipboard', (event, data) => clipboard.writeText(data))
 	createWindow()
 })
 
@@ -123,13 +124,13 @@ async function authenticateUser(event, email, password) {
 //User Authentication + Login
 //=====================================================================
 //post to server
-async function post_to_server(path,info) {
-	return new Promise(async (resolve, reject) =>{
+async function post_to_server(serverPath,info) {
+	return new Promise(async (resolve, reject) => {
 		const toSend = info
 		var options = {
 			hostname: 'www.salussecurity.live',
 			port: 5443,
-			path: path,
+			path: serverPath,
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/JSON',
@@ -160,7 +161,7 @@ async function post_to_server(path,info) {
 }
 
 
-function signup(email,pass) {
+function signup(email, pass) {
 	salt = crypto.randomBytes(16).toString('hex');
 	hash = crypto.pbkdf2Sync(pass, this.salt, 1000, 64, `sha512`).toString(`hex`);
 	key = generate_key(hash,salt)
@@ -236,7 +237,6 @@ function generatePassword(length = 10, numbers = false, symbols = false) {
 		numbers: numbers,
 		symbols: symbols
 	})
-	console.log(password)
 	child.webContents.send('insertPassword', password)
 }
 

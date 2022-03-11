@@ -24,19 +24,6 @@ window.electronAPI.accessPasswords().then((passwords) => {
     console.log(error)
 })
 
-// async function getPasswords() {
-//     const passwords = await 
-//     return new Promise((resolve, reject) => {
-//         if (Object.keys(passwords).length != 0) {
-//             console.log(passwords)
-            
-//             resolve(passwords)
-//         } else {
-//             reject('No accounts')
-//         }
-//     })
-// }
-
 function showHidePassword() {
     const passwordBox = document.getElementById('password')
     const hideButton = document.getElementById('hideButton')
@@ -65,18 +52,14 @@ function populateSidebar(searchTerm=null) {
             account = accountNames[index]
             console.log(pattern.test(account))
             if (pattern.test(account)) {
-                console.log('here' + account)
                 accountList.push(account)
             }
         }
     } else {
         accountList = Object.keys(accountData)
     }
-
-    console.log(accountList)
     for (index in accountList) {
         account = accountList[index]
-        console.log(account)
         const listElement = createListElement(account, account)
         listElement.addEventListener('click', (event) => {
             const accountId = event['target']['id']
@@ -210,6 +193,17 @@ function initialisePasswordView() {
         showHidePassword()
     })
     passwordSection.appendChild(hideButton)
+
+    const copyButton = document.createElement('button')
+    const copyButtonText = document.createTextNode('Copy Password')
+    copyButton.appendChild(copyButtonText)
+    copyButton.setAttribute('id', 'copyButton')
+    copyButton.addEventListener('click', () => {
+        const toCopy = document.getElementById('password').value
+        console.log(toCopy)
+        window.electronAPI.copyToClipboard(toCopy)
+    })
+    passwordSection.appendChild(copyButton)
 
     const urlLabel = document.createElement('label')
     const urlLabelText = document.createTextNode('Website Address:')
