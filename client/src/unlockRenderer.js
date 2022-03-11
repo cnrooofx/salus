@@ -1,7 +1,8 @@
 const form = document.getElementById('unlock-form')
 var userEmail
 
-form.addEventListener('submit', () => {
+form.addEventListener('submit', (event) => {
+    event.preventDefault()
     const password = document.getElementById('password').value
     window.electronAPI.login(userEmail, password)
 })
