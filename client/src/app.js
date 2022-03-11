@@ -218,6 +218,7 @@ async function verify(email,pass,salt){
 	post_to_server('/login', JSON.stringify({"email":email,"pass":hash}))
 		.then((data) => {
 			if (data != 'false') {
+				storage.set('logged-in', true)
 				storage.set('usr_data', data)
 				// getData()
 				win.loadFile(path.join(__dirname, 'main.html'))
