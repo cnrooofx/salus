@@ -7,8 +7,6 @@ var generator = require('generate-password')
 
 const storage = new Store()
 
-storage.set('passwords', {})
-
 let win
 let child
 
@@ -60,17 +58,22 @@ app.whenReady().then(() => {
 		generatePassword(length, numbers, symbols)
 	})
 	ipcMain.handle('accessPasswords', () => {
-		return Promise.resolve(storage.get('passwords'))
+		const hasPassswords = storage.has('passwords')
+		return new Promise((resolve, reject) => {
+			if (hasPassswords) {
+				const passwords = storage.get('passwords')
+				if (Object.keys(passwords).length > 0) {
+					resolve(passwords)
+				} else {
+					reject('empty passwords (safe to ignore)')
+				}
+			} else {
+				reject('no passwords yet (safe to ignore)')
+			}
+		})
 	})
-	ipcMain.on('updatePasswords', (updatedPasswords) => {
-		console.log('before')
-		acc = {"google":{
-			"username":"example@gmail.com",
-			"password":"1234",
-			"url":'google.com',
-			"notes":"my gmail account"
-		}}
-		storage.set('passwords', JSON.stringify(acc))
+	ipcMain.on('updatePasswords', (event, updatedPasswords) => {
+		storage.set('passwords', updatedPasswords)
 		// sendData()
 		child.close()
 		win.reload()
@@ -101,14 +104,19 @@ app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') app.quit()
 })
 
+app.on('quit', () => {
+	storage.delete('passwords')
+})
+
 async function authenticateUser(event, email, password) {
 	login(email, password)
-	if (storage.get('logged-in') == false){
+	const loginStatus = storage.get('logged-in', false)
+	if (loginStatus) {
+		storage.set('userEmail', email)
+	} else {
 		console.log("login error")
-		return false
 	}
-	storage.set('userEmail', email)
-	return true
+	return loginStatus
 }
 
 //=====================================================================

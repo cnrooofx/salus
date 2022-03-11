@@ -11,31 +11,31 @@ var sidebarSelection = null
 var selectedAccountId = null
 var accountData
 
-getPasswords().then(init, (error) => {
+window.electronAPI.accessPasswords().then((passwords) => {
+    if (typeof passwords != 'object') {
+        accountData = JSON.parse(passwords)
+    } else {
+        accountData = passwords
+    }
+    initialisePasswordView()
+    populateSidebar()
+}, (error) => {
     createListElement('empty', 'No Accounts Yet')
     console.log(error)
 })
 
-function init() {
-    if (accountData === null || Object.keys(accountData).length === 0) {
-        createListElement('empty', 'No Accounts Yet')
-    } else {
-        initialisePasswordView()
-        populateSidebar()
-    }
-}
-
-async function getPasswords() {
-    const passwords = await window.electronAPI.accessPasswords()
-    return new Promise((resolve, reject) => {
-        if (passwords) {
-            accountData = JSON.parse(passwords)
-            resolve()
-        } else {
-            reject('No accounts')
-        }
-    })
-}
+// async function getPasswords() {
+//     const passwords = await 
+//     return new Promise((resolve, reject) => {
+//         if (Object.keys(passwords).length != 0) {
+//             console.log(passwords)
+            
+//             resolve(passwords)
+//         } else {
+//             reject('No accounts')
+//         }
+//     })
+// }
 
 function showHidePassword() {
     const passwordBox = document.getElementById('password')
@@ -113,6 +113,7 @@ function changeSidebarSelection(accountName) {
 }
 
 function updatePasswordView(accountName) {
+    console.log('update ' + accountName)
     let username
     let password
     let url
@@ -132,7 +133,7 @@ function updatePasswordView(accountName) {
         notes = accountData[accountName]['notes']
     }
     const accountTitle = document.getElementById('title')
-    accountTitle.value = accountName
+    accountTitle.innerHTML = accountName
 
     const usernameBox = document.getElementById('username')
     if (username) {

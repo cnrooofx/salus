@@ -4,30 +4,19 @@ cancelButton.addEventListener('click', () => window.close())
 var accountData
 var accountId = window.localStorage.getItem('accountId')
 
-console.log('before')
-getPasswords().then(() => {
-    console.log('then')
-    
+window.electronAPI.accessPasswords().then((passwords) => {
+    if (typeof passwords != 'object') {
+        accountData = JSON.parse(passwords)
+    } else {
+        accountData = passwords
+    }
     if (accountId !== null && accountId != 'undefined') {
         updatePasswordView(accountId)
     }
 }, (error) => {
-    console.log('error')
+    console.log(error)
     accountData = {}
 })
-
-async function getPasswords() {
-    const passwords = await window.electronAPI.accessPasswords()
-    return new Promise((resolve, reject) => {
-        if (passwords) {
-            accountData = passwords
-            resolve(passwords)
-        } else {
-            accountData = {}
-            reject('No accounts')
-        }
-    })
-}
 
 function save() {
     const title = document.getElementById('title').value
@@ -46,13 +35,8 @@ function save() {
             'url': url,
             'notes': notes
         }
-        console.log(accountData)
-        // console.log(JSON.stringify(accountData))
         window.electronAPI.updatePasswords(accountData)
     }
-    
-    // console.log(window.localStorage.getItem('passwords'))
-    // window.close()
 }
 
 function updatePasswordView(accountName) {
@@ -62,11 +46,11 @@ function updatePasswordView(accountName) {
     let url
     let notes
 
-    if ('user' in accountData[accountName]) {
-        username = accountData[accountName]['user']
+    if ('username' in accountData[accountName]) {
+        username = accountData[accountName]['username']
     }
-    if ('pass' in accountData[accountName]) {
-        password = accountData[accountName]['pass']
+    if ('password' in accountData[accountName]) {
+        password = accountData[accountName]['password']
     }
     if ('url' in accountData[accountName]) {
         
@@ -94,7 +78,7 @@ function updatePasswordView(accountName) {
     if (url) {
         urlBox.value = url
     } else {
-        urlBox.value = 'empty'
+        urlBox.value = ''
     }
     const notesBox = document.getElementById('notes')
     if (notes) {

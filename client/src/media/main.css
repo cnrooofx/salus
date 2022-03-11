@@ -71,7 +71,8 @@ header button:hover {
 /* Account List */
 nav ul, main {
     height: 92%;
-    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
     scroll-behavior: smooth;
 }
 nav ul { 
@@ -143,7 +144,6 @@ main label, legend {
 }
 
 /* Editor */
-
 fieldset {
     border: 0.1em solid var(--light-background);
     border-radius: 0.4em;
