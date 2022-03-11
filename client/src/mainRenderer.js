@@ -96,52 +96,44 @@ function changeSidebarSelection(accountName) {
 }
 
 function updatePasswordView(accountName) {
+    const accountDetails = JSON.parse(decrypt(accountData[accountName]))
     console.log('update ' + accountName)
     let username
     let password
     let url
     let notes
 
-    if ('username' in accountData[accountName]) {
-        username = accountData[accountName]['username']
+    if ('username' in accountDetails) {
+        username = accountDetails['username']
+    } else {
+        username = ''
     }
-    if ('password' in accountData[accountName]) {
-        password = accountData[accountName]['password']
+    if ('password' in accountDetails) {
+        password = accountDetails['password']
+    } else {
+        password = ''
     }
-    if ('url' in accountData[accountName]) {
-
-        url = accountData[accountName]['url']
+    if ('url' in accountDetails) {
+        url = accountDetails['url']
+    } else {
+        url = ''
     }
-    if ('notes' in accountData[accountName]) {
-        notes = accountData[accountName]['notes']
+    if ('notes' in accountDetails) {
+        notes = accountDetails['notes']
+    } else {
+        notes = ''
     }
     const accountTitle = document.getElementById('title')
     accountTitle.innerHTML = accountName
 
     const usernameBox = document.getElementById('username')
-    if (username) {
-        usernameBox.value = username
-    } else {
-        usernameBox.value = ''
-    }
+    usernameBox.value = username
     const passwordBox = document.getElementById('password')
-    if (password) {
-        passwordBox.value = password
-    } else {
-        passwordBox.value = ''
-    }
+    passwordBox.value = password
     const urlBox = document.getElementById('url')
-    if (url) {
-        urlBox.value = url
-    } else {
-        urlBox.value = ''
-    }
+    urlBox.value = url
     const notesBox = document.getElementById('notes')
-    if (notes) {
-        notesBox.innerHTML = notes
-    } else {
-        notesBox.innerHTML = ''
-    }
+    notesBox.innerHTML = notes
 }
 
 function initialisePasswordView() {
@@ -239,4 +231,17 @@ function initialisePasswordView() {
     editButton.appendChild(editButtonText)
     passwordFooter.appendChild(editButton)
     passwordSection.appendChild(passwordFooter)
+}
+
+function decrypt(encrypted_msg) {
+    const data = JSON.parse(storage.get('usr_data'));
+    const iv = data['iv'];
+    const key = generate_key();
+    const algorithm = 'aes-192-cbc';
+    const decipher = crypto.createDecipheriv(algorithm, key, iv)
+    decipher.write(encrypted_msg, 'hex')
+    decipher.end();
+    let out = '';
+    out += decipher.read().toString('utf8');
+    return out;
 }

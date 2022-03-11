@@ -44,51 +44,44 @@ function save() {
 
 function updatePasswordView(accountName) {
     // Update the username, password fields to the specified account info
+    const accountDetails = JSON.parse(decrypt(accountData[accountName]))
+    console.log('update ' + accountName)
     let username
     let password
     let url
     let notes
 
-    if ('username' in accountData[accountName]) {
-        username = accountData[accountName]['username']
+    if ('username' in accountDetails) {
+        username = accountDetails['username']
+    } else {
+        username = ''
     }
-    if ('password' in accountData[accountName]) {
-        password = accountData[accountName]['password']
+    if ('password' in accountDetails) {
+        password = accountDetails['password']
+    } else {
+        password = ''
     }
-    if ('url' in accountData[accountName]) {
-        
-        url = accountData[accountName]['url']
+    if ('url' in accountDetails) {
+        url = accountDetails['url']
+    } else {
+        url = ''
     }
-    if ('notes' in accountData[accountName]) {
-        notes = accountData[accountName]['notes']
+    if ('notes' in accountDetails) {
+        notes = accountDetails['notes']
+    } else {
+        notes = ''
     }
     const accountTitle = document.getElementById('title')
-    accountTitle.value = accountName
+    accountTitle.innerHTML = accountName
 
     const usernameBox = document.getElementById('username')
-    if (username) {
-        usernameBox.value = username
-    } else {
-        usernameBox.value = ''
-    }
+    usernameBox.value = username
     const passwordBox = document.getElementById('editorPassword')
-    if (password) {
-        passwordBox.value = password
-    } else {
-        passwordBox.value = ''
-    }
+    passwordBox.value = password
     const urlBox = document.getElementById('url')
-    if (url) {
-        urlBox.value = url
-    } else {
-        urlBox.value = ''
-    }
+    urlBox.value = url
     const notesBox = document.getElementById('notes')
-    if (notes) {
-        notesBox.innerHTML = notes
-    } else {
-        notesBox.innerHTML = ''
-    }
+    notesBox.innerHTML = notes
     
 }
 
