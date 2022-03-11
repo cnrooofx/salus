@@ -10,6 +10,7 @@ const sidebar = document.getElementById('sidebar')
 var sidebarSelection = null
 var selectedAccountId = null
 var accountData
+var userData
 
 window.electronAPI.accessPasswords().then((passwords) => {
     if (typeof passwords != 'object') {
@@ -18,11 +19,24 @@ window.electronAPI.accessPasswords().then((passwords) => {
         accountData = passwords
     }
     initialisePasswordView()
-    populateSidebar()
+    accessUserData().then(() => populateSidebar(), (error) => console.log(error))
+    
 }, (error) => {
     createListElement('empty', 'No Accounts Yet')
     console.log(error)
 })
+
+async function accessUserData() {
+    const userDataString = await window.electronAPI.getUserData()
+    return new Promise((resolve, reject) => {
+        if (userDataString) {
+            userData = JSON.parse(userDataString)
+            resolve()
+        } else {
+            reject('No accounts')
+        }
+    })
+}
 
 function showHidePassword() {
     const passwordBox = document.getElementById('password')
@@ -96,7 +110,9 @@ function changeSidebarSelection(accountName) {
 }
 
 function updatePasswordView(accountName) {
-    const accountDetails = JSON.parse(decrypt(accountData[accountName]))
+    const accountDetails = accountData[accountName]
+    // const accountDetails = JSON.parse(decrypt(accountData[accountName]))
+
     console.log('update ' + accountName)
     let username
     let password
@@ -191,9 +207,8 @@ function initialisePasswordView() {
     copyButton.appendChild(copyButtonText)
     copyButton.setAttribute('id', 'copyButton')
     copyButton.addEventListener('click', () => {
-        const toCopy = document.getElementById('password').value
-        console.log(toCopy)
-        window.electronAPI.copyToClipboard(toCopy)
+        const copyPassword = document.getElementById('password').value
+        window.electronAPI.copyToClipboard(copyPassword)
     })
     passwordSection.appendChild(copyButton)
 
@@ -209,6 +224,16 @@ function initialisePasswordView() {
     urlBox.setAttribute('id', 'url')
     urlBox.setAttribute('disabled', 'true')
     passwordSection.appendChild(urlBox)
+
+    const urlCopyButton = document.createElement('button')
+    const urlCopyButtonText = document.createTextNode('Copy Url')
+    urlCopyButton.appendChild(urlCopyButtonText)
+    urlCopyButton.addEventListener('click', () => {
+        const copyUrl = document.getElementById('url').value
+        console.log(copyUrl)
+        window.electronAPI.copyToClipboard(urlCopyButton)
+    })
+    passwordSection.appendChild(urlCopyButton)
 
     const notesLabel = document.createElement('label')
     const notesLabelText = document.createTextNode('Notes:')
@@ -234,9 +259,8 @@ function initialisePasswordView() {
 }
 
 function decrypt(encrypted_msg) {
-    const data = JSON.parse(storage.get('usr_data'));
-    const iv = data['iv'];
-    const key = generate_key();
+    const iv = userData['iv']
+    const key = crypto.scryptSync(userData['pass'], userData['salt'], 24)
     const algorithm = 'aes-192-cbc';
     const decipher = crypto.createDecipheriv(algorithm, key, iv)
     decipher.write(encrypted_msg, 'hex')

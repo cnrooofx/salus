@@ -49,7 +49,6 @@ function createModal() {
 }
 
 app.whenReady().then(() => {
-	ipcMain.handle('authenticate', authenticateUser)
 	ipcMain.on('openEditor', (event, accountId) => {
 		createModal()
 		child.webContents.send('accountId', accountId)
@@ -124,7 +123,7 @@ async function authenticateUser(event, email, password) {
 //User Authentication + Login
 //=====================================================================
 //post to server
-async function post_to_server(serverPath,info) {
+async function post_to_server(serverPath, info) {
 	return new Promise(async (resolve, reject) => {
 		const toSend = info
 		var options = {
@@ -144,19 +143,17 @@ async function post_to_server(serverPath,info) {
 				str += chunk;
 			});
 			response.on('end', function () {
-				if (str != "false") {
-					// console.log("Success")
+				if (str != 'false') {
 					resolve(str)
 				}
 				else {
-					// console.log("Error In Uploading Data " + str)
-					reject("error")
+					reject('post to server error')
 				}
 			})
 		}
-		var req = https.request(options, callback);
-		req.write(toSend);
-		req.end();
+		var req = https.request(options, callback)
+		req.write(toSend)
+		req.end()
 	})
 }
 
@@ -263,16 +260,18 @@ function getData() {
 		}
 	};
 	
-	callback = function (response) {
-		//console.log("djhge")
-		var str = "";
+	const callback = function (response) {
+		var str = ''
 		response.on('data', function (chunk) {
-			str += chunk;
+			str += chunk
 		});
 		response.on('end', function () {
-			if (str != "") {
-				console.log(str)
-				storage.set('passwords',JSON.parse(str)["pass"])
+			if (str != '') {
+				const passwordBundle = JSON.parse(str)['pass']
+				if (storage.has('passwords')) {
+					storage.delete('passwords')
+				}
+				storage.set('passwords', passwordBundle)
 				win.reload()
 			}
 			else {
@@ -280,9 +279,9 @@ function getData() {
 			}
 		})
 	}
-	var req = https.request(options, callback);
-	req.write(toSend);
-	req.end();
+	var req = https.request(options, callback)
+	req.write(toSend)
+	req.end()
 }
 
 /*
@@ -307,7 +306,7 @@ function sendData() {
 		}
 	};
 	
-	callback = function (response) {
+	const callback = function (response) {
 		var str = "";
 		response.on('data', function (chunk) {
 			str += chunk;
@@ -338,30 +337,30 @@ function generate_key(password,salt){
 //Encrypts and returns a message
 //Generates key and gets iv from user_data in electron storage
 function encrypt(msg){
-	const data = JSON.parse(storage.get('usr_data'));
-	const iv = data['iv'];
-	const key = generate_key(data['password'],data['salt']);
-	const algorithm = 'aes-192-cbc';
-	const cipher = crypto.createCipheriv(algorithm, key, iv);
-	cipher.write(msg);
-	cipher.end();
-	let out = '';
-	out += cipher.read().toString('hex');
-	return out;
+	const data = JSON.parse(storage.get('usr_data'))
+	const iv = data['iv']
+	const key = generate_key(data['password'],data['salt'])
+	const algorithm = 'aes-192-cbc'
+	const cipher = crypto.createCipheriv(algorithm, key, iv)
+	cipher.write(msg)
+	cipher.end()
+	let out = ''
+	out += cipher.read().toString('hex')
+	return out
 }
 
 //Decrypts and returns encrypted message
 //Generates key and gets iv from user_data in electron storage
 function decrypt(encrypted_msg){
-	const data = JSON.parse(storage.get('usr_data'));
-	const iv = data['iv'];
-	const key = generate_key();
-	const algorithm = 'aes-192-cbc';
+	const data = JSON.parse(storage.get('usr_data'))
+	const iv = data['iv']
+	const key = generate_key(data['password'], data['salt'])
+	const algorithm = 'aes-192-cbc'
 	const decipher = crypto.createDecipheriv(algorithm, key, iv)
 	decipher.write(encrypted_msg, 'hex')
-	decipher.end();
-	let out = '';
-	out += decipher.read().toString('utf8');
+	decipher.end()
+	let out = ''
+	out += decipher.read().toString('utf8')
 	return out;
 }
 

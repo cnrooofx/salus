@@ -2,6 +2,7 @@ const cancelButton = document.getElementById('cancel')
 cancelButton.addEventListener('click', () => window.close())
 
 var accountData
+var userData
 var accountId = window.localStorage.getItem('accountId')
 
 window.electronAPI.accessPasswords().then((passwords) => {
@@ -11,7 +12,9 @@ window.electronAPI.accessPasswords().then((passwords) => {
         accountData = passwords
     }
     if (accountId !== null && accountId != 'undefined') {
-        updatePasswordView(accountId)
+        accessUserData().then(() => {
+            updatePasswordView(accountId)
+        }, (error) => console.log(error)) 
     }
 }, (error) => {
     console.log(error)
@@ -32,19 +35,23 @@ function save() {
         if (title != accountId) {
             delete accountData[accountId]
         }
-        accountData[title] = {
+        const accountDetails = {
             'username': username,
             'password': password,
             'url': url,
             'notes': notes
         }
+        accountData[title] = accountDetails
+        // accountData[title] = encrypt(accountDetails)
+
         window.electronAPI.updatePasswords(accountData)
     }
 }
 
 function updatePasswordView(accountName) {
     // Update the username, password fields to the specified account info
-    const accountDetails = JSON.parse(decrypt(accountData[accountName]))
+    const accountDetails = accountData[accountName]
+    // const accountDetails = JSON.parse(decrypt(accountData[accountName]))
     console.log('update ' + accountName)
     let username
     let password
@@ -82,7 +89,6 @@ function updatePasswordView(accountName) {
     urlBox.value = url
     const notesBox = document.getElementById('notes')
     notesBox.innerHTML = notes
-    
 }
 
 function generateNewPassword() {
@@ -103,3 +109,27 @@ passwordButton.addEventListener('click', (event) => {
     event.preventDefault()
     generateNewPassword()
 })
+
+function encrypt(msg) {
+    const iv = userData['iv']
+    const key = crypto.scryptSync(userData['pass'], userData['salt'], 24)
+    const algorithm = 'aes-192-cbc'
+    const cipher = crypto.createCipheriv(algorithm, key, iv)
+    cipher.write(msg)
+    cipher.end()
+    let out = ''
+    out += cipher.read().toString('hex')
+    return out
+}
+
+function decrypt(encrypted_msg) {
+    const iv = userData['iv']
+    const key = crypto.scryptSync(userData['pass'], userData['salt'], 24)
+    const algorithm = 'aes-192-cbc'
+    const decipher = crypto.createDecipheriv(algorithm, key, iv)
+    decipher.write(encrypted_msg, 'hex')
+    decipher.end()
+    let out = ''
+    out += decipher.read().toString('utf8')
+    return out
+}
