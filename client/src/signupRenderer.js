@@ -1,11 +1,16 @@
 const form = document.getElementById('signup-form')
-console.log('hii')
+
 form.addEventListener('submit', (event) => {
     event.preventDefault()
-    console.log('hi')
-    const email = document.getElementById("email").value
-    const password = document.getElementById("password").value
-    window.electronAPI.signup(email, password)
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password1').value
+    const verify = document.getElementById('password2').value
+    if (password == verify && password != '' && verify != '') {
+        window.electronAPI.signup(email, password)
+    } else {
+        const errorBox = document.getElementById('error')
+        errorBox.innerHTML = 'Passwords must match'
+    }
 })
 
 

@@ -18,11 +18,14 @@
             <h1>Sign Up</h1>
             <form id="signup-form">
                 <label for="email">Email:</label>
-                <input type="email" name="email" id="email" />
-                <label for="password">Password:</label>
-                <input type="password" name="password" id="password" />
+                <input type="email" name="email" id="email" required />
+                <label for="password1">Master Password:</label>
+                <input type="password" name="password1" id="password1" />
+                <label for="password2">Re-Enter Master Password:</label>
+                <input type="password" name="password2" id="password2" />
                 <input type="submit" id="signup-button" value="Sign Up" />
             </form>
+            <p><span id="error"></span></p>
             <p>Already have an account? <a href="login.html">Click Here</a> to log in.</p>
         </main>
         <script type="module" src="./signupRenderer.js"></script>
