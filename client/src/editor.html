@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-ie">
+    <head>
+        <title>Salus</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+        <link rel="stylesheet" href="media/main.css">
+    </head>
+    <body>
+        <main>
+            <form>
+                <input id="title" name="title" type="text" placeholder="Title"/>
+                <label for="username">Username:</label>
+                <input id="username" name="username" type="text" />
+                <label for="password">Password:</label>
+                <input id="editorPassword" name="password" type="text" />
+                <fieldset>
+                    <legend>Password Generator</legend>
+                    <label for="length">Length:</label>
+                    <input id="length" type="number" name="length" value="10" max="64" min="10"/>
+                    <label for="numbers">Numbers:</label>
+                    <input id="numbers" type="checkbox" name="numbers" />
+                    <label for="symbols">Symbols:</label>
+                    <input id="symbols" type="checkbox" name="symbols" />
+                    <button id="password-button">Generate Password</button>
+                </fieldset>
+                <label for="url">Website Address:</label>
+                <input id="url" name="url" type="url" />
+                <label for="notes">Notes:</label>
+                <textarea id="notes" name="notes"></textarea>
+            </form>
+        </main>
+        <footer>
+            <button id="save">Save</button>
+            <button id="cancel">Cancel</button>
+        </footer>
+        <script type="module" src="editorRenderer.js"></script>
+    </body>
+</html>

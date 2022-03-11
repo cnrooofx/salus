@@ -1,0 +1,94 @@
+/* General */
+html {
+    --light-background: #E0E3E7;
+    --light-foreground: #EEF0F2;
+    --dark-background: #1F1F1F;
+    --dark-foreground: #333;
+    --accent: #317BB3;
+    --dark-accent: #7BAFD1;
+    --border: #7A7A7A;
+    --error: #DB504A;
+}
+body {
+    background-color: var(--light-background);
+    font-family: sans-serif;
+    overflow: hidden;
+}
+
+/* Header */
+header {
+    padding: 1.2em;
+    margin: 0.5em;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    -webkit-app-region: drag;
+}
+header h1 {
+    font-size: 2.5em;
+    text-align: center;
+}
+header img {
+    height: 80px;
+    width: 80px;
+    margin: 0.5em;
+}
+
+/* Body */
+main {
+    background-color: var(--light-foreground);
+    width: 90%;
+    height: 90%;
+    margin: auto;
+    padding: 1em;
+    border-radius: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0.5em 0.5em #ccc;
+}
+a {
+    color: var(--light-accent);
+}
+input {
+    background-color: #fff;
+    border: 0.1em solid var(--light-background);
+    border-radius: 0.5em;
+    padding: 0.7em;
+}
+input, label {
+    display: block;
+    margin: 0.4em;
+}
+label, legend {
+    font-size: 0.8em;
+    font-weight: lighter;
+}
+input[type="submit"] {
+    margin: 1em auto 0 auto;
+}
+.error {
+    color: var(--error);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--dark-background);
+        color: #fff;
+    }
+    header img {
+        filter: invert();
+    }
+    main {
+        background-color: var(--dark-foreground);
+        box-shadow: none;
+    }
+    input {
+        border-color: var(--dark-background);
+    }
+    a {
+        color: var(--dark-accent);
+    }
+}
