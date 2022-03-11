@@ -74,7 +74,7 @@ app.whenReady().then(() => {
 	})
 	ipcMain.on('updatePasswords', (event, updatedPasswords) => {
 		storage.set('passwords', updatedPasswords)
-		// sendData()
+		sendData()
 		child.close()
 		win.reload()
 	})
@@ -221,7 +221,7 @@ async function verify(email,pass,salt){
 			if (data != 'false') {
 				storage.set('logged-in', true)
 				storage.set('usr_data', data)
-				// getData()
+				getData()
 				win.loadFile(path.join(__dirname, 'main.html'))
 				return true
 			}
@@ -273,6 +273,7 @@ function getData() {
 			if (str != "") {
 				console.log(str)
 				storage.set('passwords',JSON.parse(str)["pass"])
+				win.reload()
 			}
 			else {
 				console.log(str + '\nUser Rejected')
@@ -292,12 +293,13 @@ function sendData() {
 	const data = JSON.parse(storage.get('usr_data'));
 	const toSend = JSON.stringify({
 		"id": data['_id'],
-		"pass": encrypt(storage.get('passwords'),generate_key(data['password'],data['salt']),data['iv'])
+		"pass": storage.get('passwords')
 	})
+	console.log()
 	var options = {
 		host: 'www.salussecurity.live',
 		port: 5443,
-		path: '/send_password',
+		path: '/password',
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/JSON',
